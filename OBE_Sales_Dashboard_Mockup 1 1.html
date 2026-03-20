@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>OBE · Sales Rep Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:#f0f3f8; --white:#fff; --border:#e2e8f2;
+  --navy:#0d1f3c; --navy2:#152d52;
+  --blue:#1251d3; --blue-lt:#e8effe; --blue-md:#3b72f6;
+  --green:#0b7a52; --green-lt:#e3f7ef; --green-md:#12a06e;
+  --amber:#b35a00; --amber-lt:#fff3e3; --amber-md:#e87c1e;
+  --red:#c11f1f; --red-lt:#fdeaea; --red-md:#e53535;
+  --teal:#0880a0; --teal-lt:#e3f5fb;
+  --purple:#5b21b6; --purple-lt:#ede9fe;
+  --t1:#0d1f3c; --t2:#3d526e; --t3:#8496b0; --t4:#c4cedd;
+  --sh:0 1px 3px rgba(13,31,60,.05),0 4px 14px rgba(13,31,60,.05);
+  --sh2:0 2px 8px rgba(13,31,60,.08),0 8px 24px rgba(13,31,60,.07);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--t1);font-size:11px;line-height:1.5;min-width:1100px;}
+
+/* ── TOPBAR ──────────────────────────────────────────────── */
+.topbar{background:var(--navy);height:46px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.06);}
+.tb-left{display:flex;align-items:center;gap:14px;}
+.logo-box{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:6px;padding:3px 9px;font-size:13px;font-weight:800;color:#fff;letter-spacing:1.2px;}
+.tb-title{font-size:14px;font-weight:600;color:#fff;}
+.tb-sep{width:1px;height:16px;background:rgba(255,255,255,.14);}
+.seller-wrap{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:4px 11px 4px 5px;cursor:pointer;transition:background .15s;}
+.seller-wrap:hover{background:rgba(255,255,255,.13);}
+.s-av{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#1251d3,#4f83f7);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;}
+.s-name{font-size:11px;font-weight:600;color:#fff;}
+.s-role{font-size:9px;color:rgba(255,255,255,.45);}
+.tb-divider{font-size:10px;color:rgba(255,255,255,.4);}
+.tb-dot{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.2);}
+.tb-right{display:flex;align-items:center;gap:10px;}
+.period-strip{display:flex;gap:2px;}
+.ps{padding:4px 11px;border-radius:5px;border:1px solid rgba(255,255,255,.14);font-family:'Inter',sans-serif;font-size:10px;font-weight:600;cursor:pointer;background:transparent;color:rgba(255,255,255,.45);transition:all .14s;}
+.ps:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.08);}
+.ps.on{background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.3);}
+.live-chip{display:flex;align-items:center;gap:5px;padding:3px 10px;background:rgba(16,185,100,.1);border:1px solid rgba(16,185,100,.22);border-radius:20px;}
+.live-dot{width:5px;height:5px;border-radius:50%;background:#10b964;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}60%{opacity:.2}}
+.live-txt{font-size:9px;font-weight:700;color:#10b964;letter-spacing:.5px;}
+.refresh-txt{font-size:10px;color:rgba(255,255,255,.3);}
+
+/* ── META ROW ────────────────────────────────────────────── */
+.meta-row{background:var(--navy2);height:36px;padding:0 24px;display:flex;align-items:center;gap:0;border-bottom:1px solid rgba(255,255,255,.05);}
+.mr-seg{display:flex;align-items:center;gap:8px;padding:0 18px 0 0;margin-right:18px;border-right:1px solid rgba(255,255,255,.08);}
+.mr-seg:last-child{border-right:none;}
+.mr-lbl{font-size:9px;font-weight:600;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.5px;}
+.mr-val{font-size:10px;font-weight:600;color:rgba(255,255,255,.7);}
+.biz-btns{display:flex;gap:2px;}
+.bb{padding:2px 8px;border-radius:4px;border:1px solid rgba(255,255,255,.1);font-family:'Inter',sans-serif;font-size:9px;font-weight:600;cursor:pointer;background:transparent;color:rgba(255,255,255,.4);transition:all .13s;}
+.bb:hover{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);}
+.bb.on{background:rgba(18,81,211,.5);color:#a8c4ff;border-color:rgba(18,81,211,.6);}
+.mr-fsel{background:transparent;border:1px solid rgba(255,255,255,.1);border-radius:4px;color:rgba(255,255,255,.6);font-family:'Inter',sans-serif;font-size:10px;padding:3px 8px;cursor:pointer;}
+.mr-spacer{flex:1;}
+.mr-period-lbl{font-size:9px;font-weight:600;color:rgba(255,255,255,.4);letter-spacing:.3px;}
+.reset-lnk{font-size:10px;font-weight:500;color:rgba(255,255,255,.3);cursor:pointer;padding:3px 8px;border-radius:4px;transition:all .14s;}
+.reset-lnk:hover{color:rgba(255,255,255,.7);background:rgba(255,255,255,.06);}
+
+/* ── ALERT ───────────────────────────────────────────────── */
+.alert-bar{margin:10px 24px 0;padding:8px 14px;border-radius:6px;display:flex;align-items:center;gap:8px;font-size:11px;}
+.ab-txt{color:var(--t2);line-height:1.5;flex:1;}
+.ab-txt b{font-weight:700;}
+.ab-txt .abl{color:var(--blue);font-weight:600;cursor:pointer;text-decoration:underline;}
+
+/* ── LAYOUT ──────────────────────────────────────────────── */
+.dash{display:flex;flex-direction:column;gap:8px;padding:10px 24px 20px;}
+.row{display:grid;gap:8px;}
+.row-eq3{grid-template-columns:repeat(3,1fr);}
+.row-eq2{grid-template-columns:repeat(2,1fr);}
+.row-3main{grid-template-columns:1fr 1.1fr 1fr;}
+
+/* ── PANEL ───────────────────────────────────────────────── */
+.panel{background:var(--white);border-radius:10px;border:1px solid var(--border);box-shadow:var(--sh);overflow:hidden;}
+.ph{padding:10px 16px 0;display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;}
+.ph-t{font-size:12px;font-weight:700;color:var(--t1);letter-spacing:-.1px;}
+.ph-s{font-size:10px;color:var(--t3);margin-top:1px;}
+.ph-r{display:flex;align-items:center;gap:5px;flex-shrink:0;}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:10px;font-size:9px;font-weight:700;letter-spacing:.2px;white-space:nowrap;}
+.b-blue{background:var(--blue-lt);color:var(--blue);}
+.b-green{background:var(--green-lt);color:var(--green);}
+.b-amber{background:var(--amber-lt);color:var(--amber);}
+.b-red{background:var(--red-lt);color:var(--red);}
+.b-teal{background:var(--teal-lt);color:var(--teal);}
+.b-gray{background:#f1f5f9;color:var(--t2);}
+.divider{height:1px;background:var(--border);margin:0;}
+.sec-lbl{padding:9px 16px 7px;font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid var(--border);}
+
+/* ── SECTION 1: FANCY TILES ─────────────────────────────── */
+.tiles-row{display:grid;gap:0;border-radius:10px;overflow:hidden;border:1px solid var(--border);box-shadow:var(--sh);}
+.tiles-8{grid-template-columns:repeat(8,1fr);}
+.tile{
+  background:var(--white);
+  padding:14px 16px 12px;
+  border-right:1px solid var(--border);
+  position:relative; overflow:hidden;
+  transition:background .15s;
+}
+.tile:last-child{border-right:none;}
+.tile:hover{background:#fafbfd;}
+.tile-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:0;}
+.tile-lbl{font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;white-space:nowrap;}
+.tile-val{font-family:'DM Mono',monospace;font-size:21px;font-weight:600;color:var(--t1);line-height:1.1;letter-spacing:-.5px;transition:all .3s;}
+.tile-sub{font-size:10px;color:var(--t3);margin-top:4px;display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.tile-bar{height:3px;background:var(--bg);border-radius:2px;overflow:hidden;margin-top:8px;}
+.tile-bar-fill{height:100%;border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1);}
+.tile-spark{margin-top:6px;display:block;}
+.tile-gap{font-size:10px;font-weight:700;margin-top:4px;padding:2px 7px;border-radius:4px;display:inline-block;}
+/* sparkline SVG helper */
+svg.spark{overflow:visible;}
+
+.up{color:var(--green);font-weight:600;}
+.dn{color:var(--red);font-weight:600;}
+.am{color:var(--amber);font-weight:600;}
+
+/* ── SECTION 2: CHART / CROSS-SELL / INCENTIVES ─────────── */
+.chart-legend{display:flex;gap:12px;margin-bottom:10px;}
+.cl-item{display:flex;align-items:center;gap:5px;font-size:9px;font-weight:600;color:var(--t3);}
+.cl-dot{width:10px;height:3px;border-radius:2px;flex-shrink:0;}
+
+.mix-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:0;}
+.mix-item{padding:13px 16px 11px;border-right:1px solid var(--border);}
+.mix-item:last-child{border-right:none;}
+.mix-biz{font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:5px;margin-bottom:4px;}
+.mix-dot{width:7px;height:7px;border-radius:50%;}
+.mix-val{font-family:'DM Mono',monospace;font-size:20px;font-weight:600;color:var(--t1);line-height:1.1;}
+.mix-pct{font-size:10px;font-weight:700;margin-top:3px;display:flex;align-items:center;gap:4px;}
+.mix-bar-bg{height:3px;background:var(--bg);border-radius:2px;overflow:hidden;margin-top:6px;}
+.mix-bar-fill{height:100%;border-radius:2px;transition:width .5s;}
+
+.cs-matrix{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:10px 16px 14px;border-top:1px solid var(--border);}
+.cs-cell{border-radius:6px;padding:8px 10px;border:1px solid var(--border);}
+.cs-cell-lbl{font-size:8px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;}
+.cs-cell-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:600;}
+.cs-cell-cnt{font-size:9px;color:var(--t3);margin-top:1px;}
+.cs-single{border-color:rgba(179,90,0,.2);background:var(--amber-lt);}
+.cs-single .cs-cell-val{color:var(--amber);}
+.cs-multi{border-color:rgba(11,122,82,.2);background:var(--green-lt);}
+.cs-multi .cs-cell-val{color:var(--green);}
+
+.inc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;}
+.inc-item{padding:13px 16px;border-right:1px solid var(--border);}
+.inc-item:last-child{border-right:none;}
+.inc-lbl{font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;}
+.inc-val{font-family:'DM Mono',monospace;font-size:18px;font-weight:600;color:var(--t1);}
+.inc-sub{font-size:10px;color:var(--t3);margin-top:2px;}
+.inc-max-row{padding:10px 16px;border-top:1px solid var(--border);}
+.inc-accel-row{padding:10px 16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.inc-accel-lbl{font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.4px;}
+.accel-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;letter-spacing:.3px;}
+.accel-dot{width:8px;height:8px;border-radius:50%;}
+.inc-max-lbl{font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:7px;}
+.inc-max-inner{display:flex;align-items:center;gap:14px;}
+.inc-max-val{font-family:'DM Mono',monospace;font-size:20px;font-weight:600;color:var(--green);flex-shrink:0;}
+.inc-pbar-wrap{flex:1;}
+.inc-pbar-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--t3);margin-bottom:4px;}
+.inc-pbar-track{height:7px;background:var(--bg);border-radius:4px;overflow:hidden;}
+.inc-pbar-fill{height:100%;border-radius:4px;transition:width .5s cubic-bezier(.4,0,.2,1);}
+.inc-pbar-note{font-size:9px;color:var(--t3);margin-top:5px;}
+
+/* ── QUOTES GRID ─────────────────────────────────────────── */
+.quotes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-bottom:1px solid var(--border);}
+.q-cell{padding:10px 14px;border-right:1px solid var(--border);position:relative;}
+.q-cell:last-child{border-right:none;}
+.q-cell-label{font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;white-space:nowrap;}
+.q-cell-row{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
+.q-num{font-family:'DM Mono',monospace;font-size:13px;font-weight:700;color:var(--t2);}
+.q-num-val{font-family:'DM Mono',monospace;font-size:16px;font-weight:600;color:var(--t1);}
+.q-sep{font-size:10px;color:var(--t4);}
+.q-tag{font-size:8px;font-weight:700;padding:1px 5px;border-radius:3px;position:absolute;top:8px;right:10px;}
+
+/* ── SECTION 3: FUNNEL / ACCOUNTS / THIS WEEK ───────────── */
+.fn-row{display:flex;align-items:center;gap:8px;padding:4px 0;}
+.fn-stage{font-size:10px;font-weight:500;color:var(--t2);width:78px;flex-shrink:0;}
+.fn-bar-wrap{flex:1;height:28px;background:var(--bg);border-radius:4px;overflow:hidden;}
+.fn-bar{height:100%;border-radius:4px;display:flex;align-items:center;padding:0 10px;font-size:10px;font-weight:700;color:#fff;white-space:nowrap;transition:width .5s cubic-bezier(.4,0,.2,1);}
+.fn-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.fn-val{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:var(--t1);width:44px;text-align:right;}
+.fn-opps{font-size:9px;color:var(--t3);width:38px;text-align:right;}
+
+.acct-tbl{width:100%;border-collapse:collapse;}
+.acct-tbl th{font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.4px;padding:6px 14px;border-bottom:2px solid var(--border);text-align:left;background:var(--bg);}
+.acct-tbl td{padding:7px 14px;border-bottom:1px solid var(--border);font-size:11px;color:var(--t2);}
+.acct-tbl tr:last-child td{border-bottom:none;}
+.acct-tbl tr:hover td{background:#fafbfd;}
+.at-name{font-weight:700;color:var(--t1);font-size:11px;}
+.at-sub{font-size:9px;color:var(--t3);margin-top:1px;}
+.at-st{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;}
+.st-g{background:var(--green-lt);color:var(--green);}
+.st-a{background:var(--amber-lt);color:var(--amber);}
+.st-r{background:var(--red-lt);color:var(--red);}
+.st-b{background:var(--blue-lt);color:var(--blue);}
+
+.week-item{padding:10px 16px;border-bottom:1px solid var(--border);}
+.week-item:last-child{border-bottom:none;}
+.wi-row{display:flex;align-items:center;gap:10px;}
+.wi-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.wi-body{flex:1;min-width:0;}
+.wi-title{font-size:11px;font-weight:600;color:var(--t1);}
+.wi-sub{font-size:9px;color:var(--t3);margin-top:1px;}
+.wi-num{font-family:'DM Mono',monospace;font-size:22px;font-weight:600;color:var(--t1);line-height:1;}
+.act-row{display:flex;gap:10px;padding:7px 16px;border-bottom:1px solid var(--border);}
+.act-row:last-child{border-bottom:none;}
+.act-dot{width:6px;height:6px;border-radius:50%;margin-top:3px;flex-shrink:0;}
+.act-body{flex:1;min-width:0;}
+.act-t{font-size:11px;font-weight:600;color:var(--t1);line-height:1.4;}
+.act-s{font-size:10px;color:var(--t3);margin-top:2px;}
+.act-tag{font-size:9px;font-weight:700;color:var(--amber);}
+.act-time{font-size:9px;color:var(--t4);white-space:nowrap;flex-shrink:0;margin-top:2px;}
+
+/* ── SECTION 4: BLOCKERS ────────────────────────────────── */
+.block-tbl{width:100%;border-collapse:collapse;}
+.block-tbl th{font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.4px;padding:6px 14px;border-bottom:2px solid var(--border);text-align:left;background:var(--bg);}
+.block-tbl td{padding:7px 14px;border-bottom:1px solid var(--border);font-size:11px;color:var(--t2);}
+.block-tbl tr:last-child td{border-bottom:none;}
+.block-tbl tr:hover td{background:#fafbfd;}
+.block-name{font-weight:700;color:var(--t1);}
+.block-reason{font-size:9px;color:var(--t3);margin-top:1px;}
+.btype{display:inline-flex;align-items:center;padding:2px 7px;border-radius:4px;font-size:9px;font-weight:700;}
+.bt-credit{background:var(--red-lt);color:var(--red);}
+.bt-billing{background:var(--amber-lt);color:var(--amber);}
+.bt-delivery{background:var(--purple-lt);color:var(--purple);}
+
+.stale-row{display:flex;align-items:center;gap:8px;padding:7px 14px;border-bottom:1px solid var(--border);}
+.stale-row:last-child{border-bottom:none;}
+.stale-row:hover{background:#fafbfd;}
+.stale-name{font-size:11px;font-weight:600;color:var(--t1);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.stale-days{font-family:'DM Mono',monospace;font-size:11px;font-weight:700;}
+.stale-val{font-family:'DM Mono',monospace;font-size:10px;color:var(--t2);}
+.stale-sep{width:3px;height:3px;border-radius:50%;background:var(--t4);flex-shrink:0;}
+.stale-flag{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;}
+.sf-r{background:var(--red-lt);color:var(--red);}
+.sf-a{background:var(--amber-lt);color:var(--amber);}
+.sf-b{background:var(--blue-lt);color:var(--blue);}
+.blocker-summary{display:flex;gap:0;border-top:1px solid var(--border);}
+.bs-seg{flex:1;padding:9px 14px;border-right:1px solid var(--border);text-align:center;}
+.bs-seg:last-child{border-right:none;}
+.bs-seg-lbl{font-size:8px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;}
+.bs-seg-val{font-family:'DM Mono',monospace;font-size:15px;font-weight:700;}
+
+/* ── BOTTOM STRIP ────────────────────────────────────────── */
+.btm-strip{background:var(--white);border:1px solid var(--border);border-radius:8px;box-shadow:var(--sh);display:flex;}
+.bsi{flex:1;padding:10px 16px;border-right:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.bsi:last-child{border-right:none;}
+.bsi-lbl{font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;}
+.bsi-val{font-family:'DM Mono',monospace;font-size:15px;font-weight:600;color:var(--t1);}
+
+@keyframes flash{from{opacity:.25}to{opacity:1}}
+.flash{animation:flash .35s ease;}
+
+/* ── INFO MODAL ──────────────────────────────────────────── */
+.info-btn{width:26px;height:26px;border-radius:50%;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.1);color:rgba(255,255,255,.75);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;line-height:1;}
+.info-btn:hover{background:rgba(255,255,255,.2);color:#fff;border-color:rgba(255,255,255,.4);}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(13,31,60,.55);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(3px);}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:14px;box-shadow:0 8px 40px rgba(13,31,60,.22);width:94vw;max-width:1120px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;}
+.modal-hdr{background:var(--navy);padding:14px 22px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.modal-hdr-left{display:flex;align-items:center;gap:12px;}
+.modal-hdr-icon{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:15px;}
+.modal-title{font-size:14px;font-weight:700;color:#fff;letter-spacing:-.1px;}
+.modal-sub{font-size:10px;color:rgba(255,255,255,.42);margin-top:2px;}
+.modal-x{width:28px;height:28px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;line-height:1;}
+.modal-x:hover{background:rgba(255,255,255,.2);color:#fff;}
+.modal-fbar{padding:9px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;background:var(--bg);flex-shrink:0;flex-wrap:wrap;}
+.m-search{flex:1;min-width:160px;max-width:260px;padding:5px 11px;border:1px solid var(--border);border-radius:6px;font-family:'Inter',sans-serif;font-size:11px;color:var(--t1);background:#fff;outline:none;}
+.m-search:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(18,81,211,.1);}
+.mfb{padding:4px 11px;border-radius:5px;border:1px solid var(--border);font-family:'Inter',sans-serif;font-size:10px;font-weight:600;cursor:pointer;background:#fff;color:var(--t2);transition:all .13s;white-space:nowrap;}
+.mfb:hover{background:var(--blue-lt);color:var(--blue);border-color:rgba(18,81,211,.2);}
+.mfb.on{background:var(--blue);color:#fff;border-color:var(--blue);}
+.modal-body{overflow-y:auto;padding:0 22px 24px;flex:1;}
+.msec{margin-top:18px;}
+.msec-hdr{font-size:10px;font-weight:800;color:var(--t1);text-transform:uppercase;letter-spacing:.6px;padding:7px 0 6px;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:8px;}
+.msec-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+.mtbl{width:100%;border-collapse:collapse;}
+.mtbl th{font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;padding:7px 11px;border-bottom:2px solid var(--border);text-align:left;background:var(--bg);white-space:nowrap;}
+.mtbl td{padding:8px 11px;border-bottom:1px solid var(--border);vertical-align:top;font-size:11px;color:var(--t2);line-height:1.5;}
+.mtbl tr:last-child td{border-bottom:none;}
+.mtbl tr:hover td{background:#fafbfd;}
+.m-name{font-weight:700;color:var(--t1);white-space:nowrap;font-size:11px;}
+.m-src{font-size:9px;color:var(--t3);margin-top:2px;}
+.rag-g{color:var(--green);font-weight:600;}
+.rag-a{color:var(--amber);font-weight:600;}
+.rag-r{color:var(--red);font-weight:600;}
+.mrow{transition:background .1s;}
+.mrow.hide{display:none;}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-left">
+    <div class="logo-box">OBE</div>
+    <span class="tb-sep"></span>
+    <span class="tb-title">Sales Performance</span>
+    <span class="tb-sep"></span>
+    <div class="seller-wrap" onclick="cycleSeller()" title="Click to cycle sellers">
+      <div class="s-av" id="hdr-av">JS</div>
+      <div><div class="s-name" id="hdr-name">Jordan Smith</div><div class="s-role" id="hdr-role">TSM · TX Southwest</div></div>
+      <span style="font-size:10px;color:rgba(255,255,255,.3);margin-left:3px;">⇄</span>
+    </div>
+    <span class="tb-dot"></span>
+    <span class="tb-divider" id="hdr-territory">TX Southwest</span>
+  </div>
+  <div class="tb-right">
+    <div class="period-strip" id="pstrip">
+      <button class="ps" onclick="setPeriod('WTD',this)">WTD</button>
+      <button class="ps" onclick="setPeriod('MTD',this)">MTD</button>
+      <button class="ps on" onclick="setPeriod('QTD',this)">QTD</button>
+      <button class="ps" onclick="setPeriod('YTD',this)">YTD</button>
+      <button class="ps" onclick="setPeriod('FY26',this)">FY26</button>
+    </div>
+    <div class="live-chip"><div class="live-dot"></div><span class="live-txt">LIVE</span></div>
+    <button class="info-btn" onclick="openModal()" title="Metric definitions &amp; logic">ⓘ</button>
+    <span class="refresh-txt">Refreshed: Mar 17, 2026 · 06:00 CT</span>
+  </div>
+</div>
+
+<!-- META ROW -->
+<div class="meta-row">
+  <div class="mr-seg">
+    <span class="mr-lbl">Seller</span>
+    <select class="mr-fsel" id="f-seller" onchange="applyFilters()" style="color:#fff;">
+      <option value="jordan">Jordan Smith</option>
+      <option value="alex">Alex Rivera</option>
+      <option value="marcus">Marcus Chen</option>
+      <option value="dana">Dana Price</option>
+      <option value="sam">Sam Torres</option>
+    </select>
+  </div>
+  <div class="mr-seg">
+    <span class="mr-lbl">Division</span>
+    <div class="biz-btns" id="biz-grp">
+      <button class="bb on" onclick="setBiz('all',this)">All</button>
+      <button class="bb" onclick="setBiz('glass',this)">Glass</button>
+      <button class="bb" onclick="setBiz('metal',this)">Metal</button>
+      <button class="bb" onclick="setBiz('hw',this)">HW</button>
+    </div>
+  </div>
+  <div class="mr-seg">
+    <span class="mr-lbl">Segment</span>
+    <select class="mr-fsel" id="f-seg" onchange="applyFilters()">
+      <option value="all">All Segments</option>
+      <option value="strategic">Strategic</option>
+      <option value="distribution">Distribution</option>
+    </select>
+  </div>
+  <div class="mr-spacer"></div>
+  <div class="mr-seg" style="border-left:1px solid rgba(255,255,255,.08);padding-left:18px;">
+    <span class="mr-period-lbl" id="period-lbl">INDIVIDUAL SELLER · QTD</span>
+  </div>
+  <span class="reset-lnk" onclick="resetAll()">↺ Reset</span>
+</div>
+
+<!-- ALERT -->
+<div class="alert-bar" id="alert-bar">
+  <span style="font-size:13px;flex-shrink:0;">⚠</span>
+  <div class="ab-txt" id="alert-txt">Loading...</div>
+</div>
+
+<div class="dash">
+
+  <!-- ══ SECTION 1: TILES ═══════════════════════════════════ -->
+  <div class="tiles-row tiles-8" id="tiles-row"></div>
+
+  <!-- ══ SECTION 2: CHART | CROSS-SELL | INCENTIVES ════════ -->
+  <div class="row row-eq3">
+
+    <!-- 2a: Bookings vs Revenue vs AOP -->
+    <div class="panel">
+      <div class="ph">
+        <div><div class="ph-t">Bookings vs Revenue vs AOP</div><div class="ph-s">13-week weekly trend</div></div>
+        <div class="ph-r" id="chart-kpis"></div>
+      </div>
+      <div style="padding:0 16px 4px;">
+        <div class="chart-legend">
+          <div class="cl-item"><div class="cl-dot" style="background:#1251d3;"></div>Bookings</div>
+          <div class="cl-item"><div class="cl-dot" style="background:#0b7a52;"></div>Revenue</div>
+          <div class="cl-item"><div style="width:12px;height:0;border-top:2px dashed #b35a00;"></div>&nbsp;AOP</div>
+        </div>
+        <svg width="100%" viewBox="0 0 480 130" style="overflow:visible;display:block;" id="trend-chart"></svg>
+      </div>
+      <div class="divider"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;" id="chart-sub-strip"></div>
+    </div>
+
+    <!-- 2b: Product Mix & Cross-Sell -->
+    <div class="panel">
+      <div class="ph">
+        <div><div class="ph-t">Product Mix &amp; Cross-Sell</div><div class="ph-s">Revenue by division &amp; penetration</div></div>
+        <span class="badge b-amber" id="cs-badge">— uplift opp</span>
+      </div>
+      <div class="mix-strip" id="mix-strip"></div>
+      <div class="cs-matrix" id="cs-matrix"></div>
+    </div>
+
+    <!-- 2c: Incentives & Earnings -->
+    <div class="panel">
+      <div class="ph">
+        <div><div class="ph-t">Incentives &amp; Earnings</div><div class="ph-s">MTD comp eligibility &amp; payout</div></div>
+      </div>
+      <div class="inc-grid" id="inc-grid"></div>
+      <div class="inc-max-row" id="inc-max-row"></div>
+      <div class="inc-accel-row" id="inc-accel-row"></div>
+    </div>
+
+  </div>
+
+  <!-- ══ SECTION 3: FUNNEL | ACCOUNTS | THIS WEEK ══════════ -->
+  <div class="row row-eq3">
+
+    <!-- 3a: Quotes / Pipeline Funnel -->
+    <div class="panel">
+      <div class="ph">
+        <div><div class="ph-t">Quotes / Pipeline Funnel</div><div class="ph-s">Quotes activity &amp; open opportunities by stage</div></div>
+        <span class="badge b-blue" id="pipe-badge">—</span>
+      </div>
+      <div class="sec-lbl" style="border-top:1px solid var(--border);">QUOTES</div>
+      <div class="quotes-grid" id="quotes-grid"></div>
+      <div class="sec-lbl">OPEN OPPORTUNITIES BY STAGE</div>
+      <div style="padding:4px 16px 12px;" id="funnel-rows"></div>
+    </div>
+
+    <!-- 3b: Top Accounts -->
+    <div class="panel">
+      <div class="ph">
+        <div><div class="ph-t">Top Accounts</div><div class="ph-s">Revenue &amp; trend vs prior year</div></div>
+        <div class="ph-r" id="health-badges"></div>
+      </div>
+      <table class="acct-tbl">
+        <thead><tr><th>Account</th><th>Rev</th><th>vs LY</th><th>Status</th></tr></thead>
+        <tbody id="acct-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- 3c: This Week – Visits & Activity -->
+    <div class="panel">
+      <div class="sec-lbl">THIS WEEK — VISITS &amp; ACTIVITY</div>
+      <div class="week-item">
+        <div class="wi-row">
+          <div class="wi-icon" style="background:var(--blue-lt);">📍</div>
+          <div class="wi-body"><div class="wi-title">Visits Completed</div><div class="wi-sub" id="visits-done-sub">—</div></div>
+          <div class="wi-num" id="visits-done">—</div>
+        </div>
+      </div>
+      <div class="week-item">
+        <div class="wi-row">
+          <div class="wi-icon" style="background:var(--teal-lt);">📅</div>
+          <div class="wi-body"><div class="wi-title">Visits Planned (Next Week)</div><div class="wi-sub" id="visits-plan-sub">—</div></div>
+          <div class="wi-num" id="visits-plan">—</div>
+        </div>
+      </div>
+      <div class="week-item" style="border-bottom:none;">
+        <div class="wi-row">
+          <div class="wi-icon" style="background:var(--green-lt);">✨</div>
+          <div class="wi-body"><div class="wi-title">New Logos</div><div class="wi-sub">First revenue ever — period</div></div>
+          <div class="wi-num up" id="new-logos">—</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="sec-lbl">RECENT ACTIVITY</div>
+      <div id="activity-list"></div>
+    </div>
+
+  </div>
+
+  <!-- ══ SECTION 4: BLOCKERS ═══════════════════════════════ -->
+  <div class="row row-eq2">
+
+    <!-- 4a: All Block Types -->
+    <div class="panel">
+      <div class="ph">
+        <div><div class="ph-t">Blockers — Credit / Billing / Delivery</div><div class="ph-s">Active holds preventing order processing</div></div>
+        <span class="badge b-red" id="blocks-badge">—</span>
+      </div>
+      <table class="block-tbl">
+        <thead><tr><th>Account</th><th>Block Type</th><th>Reason</th><th>Value</th></tr></thead>
+        <tbody id="blocks-tbody"></tbody>
+      </table>
+      <div class="blocker-summary" id="blocker-summary"></div>
+    </div>
+
+    <!-- 4b: Pipeline at Risk – Stale Deals -->
+    <div class="panel">
+      <div class="ph">
+        <div><div class="ph-t">Pipeline at Risk — Stale Deals</div><div class="ph-s">No CRM activity beyond threshold</div></div>
+        <span class="badge b-amber" id="stale-badge">—</span>
+      </div>
+      <table class="block-tbl">
+        <thead><tr><th>Account</th><th>Days Stale</th><th>Pipeline Value</th><th>Flag</th></tr></thead>
+        <tbody id="stale-tbody"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- ══ BOTTOM STRIP ═══════════════════════════════════════ -->
+  <div class="btm-strip" id="btm-strip"></div>
+
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+// CONSTANTS
+// ════════════════════════════════════════════════════════════
+const PM = { WTD:.18, MTD:.41, QTD:1, YTD:2.85, FY26:3.2 };
+const BM = { all:1, glass:.51, metal:.35, hw:.14 };
+const SM = { all:1, strategic:.58, distribution:.38 };
+
+// ════════════════════════════════════════════════════════════
+// DATA
+// ════════════════════════════════════════════════════════════
+const D = {
+  jordan:{
+    name:"Jordan Smith", av:"JS", role:"TSM · TX Southwest", territory:"TX Southwest",
+    rev:4280000, quota:5500000, bookings:5110000, yoy:7.2, bookYoy:11.4,
+    pipeline:3910000, winRate:43, conversion:43, cycle:34, fcAccAvg:85,
+    customerCount:42, customerRevPerAcct:102000,
+    lastTouch:2, activeCov:78,
+    visitsThisWeek:4, visitsNextWeek:7, newLogos:3,
+    incEligible:4280000, incEst:6057, incPace:6057, incMax:9375,
+    alert:{type:"warn", msg:'<b>3 credit-blocked accounts</b> in your territory — $60K at risk. <span class="abl">2 pipeline deals</span> approaching close with no activity in 14+ days.'},
+    accounts:[
+      {name:"Andersen Windows",    sub:"Storefront · Plano TX",    rev:480000, vsLY:8,   status:"Active"},
+      {name:"Schuco USA",          sub:"Curtainwall · Houston TX",  rev:362000, vsLY:14,  status:"Active"},
+      {name:"Permasteelisa",       sub:"Metal · Dallas TX",         rev:291000, vsLY:-3,  status:"At Risk"},
+      {name:"Guardian Glass TX",   sub:"Glass · San Antonio TX",    rev:248000, vsLY:5,   status:"Active"},
+      {name:"YKK AP America",      sub:"HW+Metal · Austin TX",      rev:204000, vsLY:-18, status:"Churning"},
+      {name:"Clearview Systems",   sub:"Storefront · Dallas TX",    rev:96000,  vsLY:31,  status:"New Logo"},
+      {name:"Kawneer Dallas",      sub:"Glass · Dallas TX",         rev:176000, vsLY:2,   status:"Active"},
+    ],
+    funnel:[
+      {stage:"Prospect",    val:1420000, opps:42, color:"#1251d3"},
+      {stage:"Qualify",     val:1080000, opps:31, color:"#4f83f7"},
+      {stage:"Proposal",    val:820000,  opps:18, color:"#0880a0"},
+      {stage:"Negotiation", val:390000,  opps:9,  color:"#b35a00"},
+      {stage:"Commit",      val:200000,  opps:5,  color:"#0b7a52"},
+    ],
+    blocks:[
+      {name:"YKK AP America",    type:"Credit",   reason:"Past Due 45d",        val:42000},
+      {name:"Permasteelisa",     type:"Credit",   reason:"Credit Limit Exceeded",val:18000},
+    ],
+    stale:[
+      {name:"Summit Commercial", days:22, val:142000, flag:"No Touch"},
+      {name:"Permasteelisa",     days:14, val:96000,  flag:"Stale"},
+      {name:"Riviera Builders",  days:10, val:64000,  flag:"Follow Up"},
+    ],
+    activity:[
+      {dot:"#0b7a52", title:"Proposal sent — Clearview Systems",  sub:"Storefront · $96K · Stage: Proposal",     tag:"",       time:"2h ago"},
+      {dot:"#b35a00", title:"Follow-up needed — Permasteelisa",   sub:"Last touch: 14 days ago",                 tag:"stale",  time:"Yesterday"},
+      {dot:"#1251d3", title:"Site visit — Andersen Windows",      sub:"Curtainwall inquiry · Opp created",        tag:"",       time:"Yesterday"},
+      {dot:"#c11f1f", title:"Lost — YKK AP America",              sub:"$42K · Credit block & churn",             tag:"",       time:"Mon"},
+    ],
+    crossSell:{
+      glassRev:2183000, metalRev:1498000, hwRev:599000,
+      matrix:[
+        {label:"Glass only",  val:1820000, accts:28, single:true},
+        {label:"Metal only",  val:940000,  accts:14, single:true},
+        {label:"HW only",     val:380000,  accts:9,  single:true},
+        {label:"Glass+Metal", val:1240000, accts:11, single:false},
+        {label:"Glass+HW",    val:620000,  accts:7,  single:false},
+        {label:"All 3 lines", val:480000,  accts:5,  single:false},
+      ],
+      upliftPerAcct:18000, singleAccts:51,
+    },
+    weeklyBookings:[82,95,88,102,115,98,122,108,135,119,142,128,158],
+    weeklyRevenue: [75,88,82,96, 108,92,115,102,128,112,134,121,148],
+    weeklyAOP:     [95,95,95,100,100,100,100,105,105,105,110,110,110],
+    mtdVsLM:21.4, yoyGrowth:7.1,
+    quotes:{ openCount:28, openVal:3910000, convertedCount:12, convertedVal:1420000, elapsedCount:5, elapsedVal:580000 },
+  },
+  alex:{
+    name:"Alex Rivera", av:"AR", role:"TSM · SE / Glass", territory:"Southeast",
+    rev:1610000, quota:2200000, bookings:1840000, yoy:-4.5, bookYoy:3.1,
+    pipeline:4200000, winRate:38, conversion:38, cycle:38, fcAccAvg:73,
+    customerCount:31, customerRevPerAcct:52000,
+    lastTouch:5, activeCov:70,
+    visitsThisWeek:4, visitsNextWeek:7, newLogos:2,
+    incEligible:1610000, incEst:2800, incPace:2800, incMax:5500,
+    alert:{type:"danger", msg:'<b>3 credit-blocked accounts</b> — $184K at risk. <span class="abl">2 pipeline deals</span> approaching close date with no activity in 14+ days.'},
+    accounts:[
+      {name:"Harmon Glass Co.",   sub:"Glass · Atlanta GA",        rev:214000, vsLY:18,  status:"Active"},
+      {name:"Southgate Builders", sub:"Curtainwall · Charlotte NC", rev:187000, vsLY:9,   status:"Active"},
+      {name:"PacificEdge Const.", sub:"Metal · Tampa FL",           rev:142000, vsLY:-3,  status:"At Risk"},
+      {name:"Summit Commercial",  sub:"Glass · Atlanta GA",         rev:118000, vsLY:-22, status:"Churning"},
+      {name:"Clearview Systems",  sub:"HW · Orlando FL",            rev:96000,  vsLY:31,  status:"New Logo"},
+      {name:"Delta Architecture", sub:"Glass · Miami FL",           rev:88000,  vsLY:5,   status:"Active"},
+      {name:"Riverbend Glazing",  sub:"Storefront · Nashville TN",  rev:64000,  vsLY:-11, status:"At Risk"},
+    ],
+    funnel:[
+      {stage:"Prospect",    val:1800000, opps:42, color:"#1251d3"},
+      {stage:"Qualify",     val:1400000, opps:31, color:"#4f83f7"},
+      {stage:"Proposal",    val:960000,  opps:18, color:"#0880a0"},
+      {stage:"Negotiation", val:640000,  opps:9,  color:"#b35a00"},
+      {stage:"Commit",      val:390000,  opps:5,  color:"#0b7a52"},
+    ],
+    blocks:[
+      {name:"Summit Commercial",  type:"Credit",   reason:"Past Due 30d",          val:84000},
+      {name:"Gateway Glass Dist.",type:"Billing",  reason:"Invoice Dispute",        val:61000},
+      {name:"Tri-State Windows",  type:"Delivery", reason:"Delivery Stop — Address",val:39000},
+    ],
+    stale:[
+      {name:"Summit Commercial", days:22, val:142000, flag:"No Touch"},
+      {name:"PacificEdge Const.",days:14, val:96000,  flag:"Stale"},
+      {name:"Riverbend Glazing", days:10, val:64000,  flag:"Follow Up"},
+    ],
+    activity:[
+      {dot:"#0b7a52", title:"Proposal sent — Clearview Systems", sub:"Storefront · $96K · Stage: Proposal",   tag:"",      time:"2h ago"},
+      {dot:"#b35a00", title:"Follow-up needed — PacificEdge",    sub:"Last touch: 14 days ago",               tag:"stale", time:"Yesterday"},
+      {dot:"#1251d3", title:"Site visit — Harmon Glass",         sub:"Curtainwall inquiry · No opp created",  tag:"",      time:"Yesterday"},
+      {dot:"#c11f1f", title:"Lost — Redstone Glaziers",          sub:"$142K · Competitor pricing",            tag:"",      time:"Mon"},
+    ],
+    crossSell:{
+      glassRev:1045000, metalRev:400000, hwRev:165000,
+      matrix:[
+        {label:"Glass only",  val:820000,  accts:22, single:true},
+        {label:"Metal only",  val:280000,  accts:9,  single:true},
+        {label:"HW only",     val:120000,  accts:7,  single:true},
+        {label:"Glass+Metal", val:480000,  accts:6,  single:false},
+        {label:"Glass+HW",    val:210000,  accts:4,  single:false},
+        {label:"All 3 lines", val:140000,  accts:3,  single:false},
+      ],
+      upliftPerAcct:14000, singleAccts:38,
+    },
+    weeklyBookings:[120,132,118,140,152,135,165,148,172,155,182,165,198],
+    weeklyRevenue: [108,118,106,126,138,122,148,133,154,139,163,148,178],
+    weeklyAOP:     [130,130,130,135,135,135,140,140,140,145,145,150,150],
+    mtdVsLM:8.2, yoyGrowth:-4.5,
+    quotes:{ openCount:32, openVal:4200000, convertedCount:9, convertedVal:980000, elapsedCount:8, elapsedVal:740000 },
+  },
+  marcus:{
+    name:"Marcus Chen", av:"MC", role:"TSM · NE / Glass", territory:"Northeast",
+    rev:2040000, quota:2200000, bookings:2250000, yoy:12.4, bookYoy:15.2,
+    pipeline:3800000, winRate:44, conversion:44, cycle:34, fcAccAvg:90,
+    customerCount:43, customerRevPerAcct:47000,
+    lastTouch:1, activeCov:88,
+    visitsThisWeek:4, visitsNextWeek:7, newLogos:5,
+    incEligible:2040000, incEst:8200, incPace:9800, incMax:11500,
+    alert:{type:"good", msg:'<b>On track for ACCELERATOR</b> — 93% attainment, 5 weeks remaining. Need +$160K. <b>0 credit blocks.</b> Forecast accuracy 90%.'},
+    accounts:[
+      {name:"Liberty Building Prod.", sub:"Curtainwall · Boston MA",   rev:520000, vsLY:18, status:"Active"},
+      {name:"Northeast Glass Co.",    sub:"Glass · New York NY",        rev:384000, vsLY:8,  status:"Active"},
+      {name:"Fenway Glass Co.",       sub:"Monolithic · Boston MA",     rev:296000, vsLY:-2, status:"Active"},
+      {name:"Empire State Glazing",   sub:"Storefront · New York NY",   rev:248000, vsLY:14, status:"Active"},
+      {name:"Hartford Hardware",      sub:"HW · Hartford CT",           rev:168000, vsLY:24, status:"Active"},
+      {name:"Providence Builders",    sub:"Metal · Providence RI",      rev:142000, vsLY:6,  status:"Active"},
+      {name:"Vermont Glass Supply",   sub:"Glass · Burlington VT",      rev:102000, vsLY:15, status:"New Logo"},
+    ],
+    funnel:[
+      {stage:"Prospect",    val:1500000, opps:35, color:"#1251d3"},
+      {stage:"Qualify",     val:1100000, opps:26, color:"#4f83f7"},
+      {stage:"Proposal",    val:700000,  opps:14, color:"#0880a0"},
+      {stage:"Negotiation", val:350000,  opps:7,  color:"#b35a00"},
+      {stage:"Commit",      val:150000,  opps:3,  color:"#0b7a52"},
+    ],
+    blocks:[],
+    stale:[
+      {name:"Fenway Glass Co.", days:8, val:88000, flag:"Follow Up"},
+    ],
+    activity:[
+      {dot:"#0b7a52", title:"Site visit — Liberty Building Prod.", sub:"Curtainwall expansion · $280K opp created", tag:"",      time:"Today"},
+      {dot:"#0b7a52", title:"Proposal — Empire State Glazing",     sub:"Storefront · $140K · Stage: Proposal",      tag:"",      time:"Yesterday"},
+      {dot:"#1251d3", title:"Meeting — Hartford Hardware",         sub:"HW line review · Re-order confirmed",        tag:"",      time:"2d ago"},
+      {dot:"#0880a0", title:"New Logo — Vermont Glass Supply",     sub:"First order $18K · Expansion potential",     tag:"",      time:"3d ago"},
+    ],
+    crossSell:{
+      glassRev:1285000, metalRev:550000, hwRev:205000,
+      matrix:[
+        {label:"Glass only",  val:640000, accts:9,  single:true},
+        {label:"Metal only",  val:280000, accts:5,  single:true},
+        {label:"HW only",     val:80000,  accts:4,  single:true},
+        {label:"Glass+Metal", val:820000, accts:10, single:false},
+        {label:"Glass+HW",    val:420000, accts:7,  single:false},
+        {label:"All 3 lines", val:380000, accts:8,  single:false},
+      ],
+      upliftPerAcct:22000, singleAccts:18,
+    },
+    weeklyBookings:[148,162,155,172,185,168,195,178,205,188,218,202,235],
+    weeklyRevenue: [135,148,142,158,170,155,180,164,189,173,200,186,216],
+    weeklyAOP:     [148,148,148,155,155,155,160,160,160,165,165,170,170],
+    mtdVsLM:14.8, yoyGrowth:12.4,
+    quotes:{ openCount:26, openVal:3800000, convertedCount:16, convertedVal:2100000, elapsedCount:2, elapsedVal:180000 },
+  },
+  dana:{
+    name:"Dana Price", av:"DP", role:"TSM · TX / Glass", territory:"TX Glass",
+    rev:1180000, quota:2200000, bookings:1320000, yoy:-14.2, bookYoy:-8.4,
+    pipeline:2900000, winRate:26, conversion:26, cycle:51, fcAccAvg:52,
+    customerCount:28, customerRevPerAcct:42000,
+    lastTouch:14, activeCov:55,
+    visitsThisWeek:1, visitsNextWeek:3, newLogos:1,
+    incEligible:1180000, incEst:1200, incPace:1200, incMax:5500,
+    alert:{type:"danger", msg:'<b>URGENT — Quota Attainment 54%.</b> Needs $1.02M in 5 weeks. <b>4 churning accounts</b>. Pipeline coverage 1.9× — below minimum. Coaching required.'},
+    accounts:[
+      {name:"TechBuild TX",       sub:"Glass · Austin TX",      rev:285000, vsLY:-5,   status:"At Risk"},
+      {name:"Lone Star Glass",    sub:"Storefront · Dallas TX",  rev:198000, vsLY:2,    status:"Active"},
+      {name:"Capital Glass",      sub:"Laminated · Austin TX",   rev:165000, vsLY:-8,   status:"At Risk"},
+      {name:"Palladium Glass",    sub:"Monolithic · Dallas TX",  rev:0,      vsLY:-100, status:"Churning"},
+      {name:"Rio Grande Builders",sub:"HW · San Antonio TX",     rev:0,      vsLY:-100, status:"Churning"},
+      {name:"Austin Frame Co.",   sub:"Metal · Austin TX",       rev:0,      vsLY:-100, status:"Churning"},
+    ],
+    funnel:[
+      {stage:"Prospect",    val:1200000, opps:24, color:"#1251d3"},
+      {stage:"Qualify",     val:850000,  opps:16, color:"#4f83f7"},
+      {stage:"Proposal",    val:580000,  opps:9,  color:"#0880a0"},
+      {stage:"Negotiation", val:200000,  opps:3,  color:"#b35a00"},
+      {stage:"Commit",      val:70000,   opps:1,  color:"#0b7a52"},
+    ],
+    blocks:[
+      {name:"Palladium Glass",    type:"Billing",  reason:"Invoice Dispute",       val:35000},
+      {name:"Rio Grande Builders",type:"Credit",   reason:"Past Due 38d",          val:22000},
+      {name:"Texas Frame Co.",    type:"Credit",   reason:"Credit Limit Exceeded", val:14000},
+    ],
+    stale:[
+      {name:"Palladium Glass", days:45, val:0,      flag:"Churning"},
+      {name:"TechBuild TX",    days:8,  val:180000, flag:"At Risk"},
+      {name:"Capital Glass",   days:10, val:95000,  flag:"Monitor"},
+    ],
+    activity:[
+      {dot:"#c11f1f", title:"Recovery meeting — TechBuild TX",  sub:"Churn risk · $285K · No opp progress",  tag:"urgent", time:"Today"},
+      {dot:"#b35a00", title:"Overdue: Palladium Glass",         sub:"45 days no touch · $35K block",         tag:"stale",  time:"3d ago"},
+      {dot:"#c11f1f", title:"Lost — Rio Grande Builders",       sub:"$52K · Moved to competitor",            tag:"",       time:"1w ago"},
+      {dot:"#c11f1f", title:"Lost — Austin Frame Co.",          sub:"$44K · No activity for 60 days",        tag:"",       time:"1w ago"},
+    ],
+    crossSell:{
+      glassRev:826000, metalRev:236000, hwRev:118000,
+      matrix:[
+        {label:"Glass only",  val:680000, accts:28, single:true},
+        {label:"Metal only",  val:180000, accts:10, single:true},
+        {label:"HW only",     val:90000,  accts:6,  single:true},
+        {label:"Glass+Metal", val:260000, accts:4,  single:false},
+        {label:"Glass+HW",    val:80000,  accts:2,  single:false},
+        {label:"All 3 lines", val:48000,  accts:1,  single:false},
+      ],
+      upliftPerAcct:18000, singleAccts:44,
+    },
+    weeklyBookings:[82,78,88,74,92,68,85,72,90,76,95,80,98],
+    weeklyRevenue: [72,68,78,64,82,58,76,62,80,66,85,70,88],
+    weeklyAOP:     [105,105,105,110,110,110,115,115,115,120,120,125,125],
+    mtdVsLM:-8.4, yoyGrowth:-14.2,
+    quotes:{ openCount:14, openVal:2900000, convertedCount:4, convertedVal:380000, elapsedCount:11, elapsedVal:920000 },
+  },
+  sam:{
+    name:"Sam Torres", av:"ST", role:"TSM · NE / Glass", territory:"Northeast",
+    rev:890000, quota:1450000, bookings:1020000, yoy:-6.8, bookYoy:2.4,
+    pipeline:2100000, winRate:31, conversion:31, cycle:45, fcAccAvg:63,
+    customerCount:24, customerRevPerAcct:37000,
+    lastTouch:9, activeCov:64,
+    visitsThisWeek:2, visitsNextWeek:3, newLogos:2,
+    incEligible:890000, incEst:1680, incPace:1680, incMax:4200,
+    alert:{type:"warn", msg:'<b>Quota Attainment 61%</b> — needs $560K in 5 weeks. <b>2 accounts</b> no touch >21 days: Providence Glass (28d), New Haven Build (24d).'},
+    accounts:[
+      {name:"Harbor Build NE",    sub:"Glass · New Haven CT",    rev:165000, vsLY:8,   status:"Active"},
+      {name:"Providence Glass",   sub:"Storefront · Providence RI",rev:182000, vsLY:-12, status:"At Risk"},
+      {name:"Coastal Frame Works",sub:"Metal · Portland ME",      rev:142000, vsLY:-4,  status:"At Risk"},
+      {name:"New Haven Build",    sub:"HW · New Haven CT",        rev:118000, vsLY:-20, status:"Churning"},
+      {name:"Vermont Glass Supply",sub:"Glass · Burlington VT",   rev:102000, vsLY:15,  status:"Active"},
+    ],
+    funnel:[
+      {stage:"Prospect",    val:880000,  opps:19, color:"#1251d3"},
+      {stage:"Qualify",     val:620000,  opps:12, color:"#4f83f7"},
+      {stage:"Proposal",    val:420000,  opps:7,  color:"#0880a0"},
+      {stage:"Negotiation", val:140000,  opps:3,  color:"#b35a00"},
+      {stage:"Commit",      val:40000,   opps:1,  color:"#0b7a52"},
+    ],
+    blocks:[
+      {name:"New Haven Build", type:"Credit", reason:"Past Due 28d", val:18000},
+    ],
+    stale:[
+      {name:"Providence Glass",    days:28, val:0,      flag:"No Touch"},
+      {name:"New Haven Build",     days:24, val:0,      flag:"Churning"},
+      {name:"Coastal Frame Works", days:11, val:45000,  flag:"Monitor"},
+    ],
+    activity:[
+      {dot:"#0b7a52", title:"Visit — Harbor Build NE",         sub:"Expansion discussion · $88K pipeline",    tag:"",       time:"Yesterday"},
+      {dot:"#b35a00", title:"Recovery visit — Providence Glass",sub:"Last touch: 28 days · Churn risk",       tag:"stale",  time:"2d ago"},
+      {dot:"#0880a0", title:"Call — Coastal Frame Works",      sub:"Metal review · Follow-up scheduled",      tag:"",       time:"3d ago"},
+      {dot:"#c11f1f", title:"Overdue — New Haven Build",       sub:"24 days no touch · Credit hold $18K",    tag:"urgent", time:"4d ago"},
+    ],
+    crossSell:{
+      glassRev:534000, metalRev:267000, hwRev:89000,
+      matrix:[
+        {label:"Glass only",  val:420000, accts:14, single:true},
+        {label:"Metal only",  val:160000, accts:9,  single:true},
+        {label:"HW only",     val:60000,  accts:6,  single:true},
+        {label:"Glass+Metal", val:280000, accts:6,  single:false},
+        {label:"Glass+HW",    val:110000, accts:3,  single:false},
+        {label:"All 3 lines", val:80000,  accts:2,  single:false},
+      ],
+      upliftPerAcct:16000, singleAccts:29,
+    },
+    weeklyBookings:[62,72,65,78,84,72,90,78,96,83,102,88,108],
+    weeklyRevenue: [55,64,58,70,76,64,82,70,88,75,93,80,98],
+    weeklyAOP:     [75,75,75,78,78,78,80,80,80,82,82,85,85],
+    mtdVsLM:-3.2, yoyGrowth:-6.8,
+    quotes:{ openCount:18, openVal:2100000, convertedCount:6, convertedVal:520000, elapsedCount:7, elapsedVal:490000 },
+  },
+};
+
+// ════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════
+let ST = { seller:"jordan", period:"QTD", biz:"all", seg:"all" };
+
+// ════════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════════
+const mult = () => PM[ST.period] * BM[ST.biz] * SM[ST.seg];
+const fm = (v,d=1) => {
+  const a=Math.abs(v), s=v<0?"-":"";
+  if(a>=1000000) return s+"$"+(a/1000000).toFixed(d)+"M";
+  if(a>=1000) return s+"$"+Math.round(a/1000)+"K";
+  return s+"$"+a;
+};
+const arr = (v,inv=false) => {
+  const up = inv?v<0:v>0;
+  return `<span class="${up?'up':'dn'}">${v>0?'▲':'▼'}${Math.abs(v).toFixed(1)}%</span>`;
+};
+const statusBadge = s =>
+  s==="Active"   ? `<span class="at-st st-g">Active</span>` :
+  s==="At Risk"  ? `<span class="at-st st-a">At Risk</span>` :
+  s==="Churning" ? `<span class="at-st st-r">Churning</span>` :
+  s==="New Logo" ? `<span class="at-st st-b">New Logo</span>` : s;
+
+// Sparkline: render last N weeks as an SVG polyline
+function sparkSVG(data, color, W=80, H=24, last=5) {
+  const pts = data.slice(-last);
+  const mn = Math.min(...pts), mx = Math.max(...pts);
+  const range = mx - mn || 1;
+  const xStep = W / (pts.length - 1);
+  const path = pts.map((v,i) => {
+    const x = (i*xStep).toFixed(1);
+    const y = (H - ((v-mn)/range*(H-4)) - 2).toFixed(1);
+    return `${i===0?'M':'L'}${x},${y}`;
+  }).join(" ");
+  const lastX = ((pts.length-1)*xStep).toFixed(1);
+  const lastY = (H - ((pts[pts.length-1]-mn)/range*(H-4)) - 2).toFixed(1);
+  return `<svg class="spark" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block;">
+    <path d="${path}" fill="none" stroke="${color}" stroke-width="1.5" opacity=".85"/>
+    <circle cx="${lastX}" cy="${lastY}" r="2.5" fill="${color}"/>
+  </svg>`;
+}
+
+// ════════════════════════════════════════════════════════════
+// RENDER
+// ════════════════════════════════════════════════════════════
+function render() {
+  const d = D[ST.seller];
+  const m = mult();
+  const pm = PM[ST.period];
+  const pLabel = ST.period;
+
+  // Header
+  document.getElementById("hdr-av").textContent = d.av;
+  document.getElementById("hdr-name").textContent = d.name;
+  document.getElementById("hdr-role").textContent = d.role;
+  document.getElementById("hdr-territory").textContent = d.territory;
+  document.getElementById("period-lbl").textContent = "INDIVIDUAL SELLER · " + pLabel;
+
+  // Alert
+  const ab = document.getElementById("alert-bar");
+  ab.style.background = d.alert.type==="danger" ? "#fdeaea" : d.alert.type==="good" ? "#e3f7ef" : "#fff3e3";
+  ab.style.border = "1px solid " + (d.alert.type==="danger"?"#f5c6c6":d.alert.type==="good"?"#b2e8d0":"#fcd38d");
+  ab.style.borderLeft = "3px solid " + (d.alert.type==="danger"?"var(--red)":d.alert.type==="good"?"var(--green)":"var(--amber)");
+  document.getElementById("alert-txt").innerHTML = d.alert.msg;
+
+  // Computed
+  const rev       = Math.round(d.rev * m);
+  const quota     = Math.round(d.quota * pm * SM[ST.seg]);
+  const bookings  = Math.round(d.bookings * m);
+  const attPct    = quota > 0 ? rev/quota*100 : 0;
+  const attR      = Math.round(attPct);
+  const gapToGoal = rev - quota;
+  const pipe      = Math.round(d.pipeline * pm * BM[ST.biz] * SM[ST.seg]);
+  const remaining = Math.max(1, quota - rev);
+  const coverage  = +(pipe / remaining).toFixed(1);
+  const wrVal     = Math.round(d.winRate * (ST.biz==='glass'?1.05:ST.biz==='metal'?.95:ST.biz==='hw'?.88:1));
+  const fcAcc     = Math.round(d.fcAccAvg + (ST.biz==='glass'?2:ST.biz==='metal'?-5:0));
+  const custCount = Math.round(d.customerCount * pm * SM[ST.seg]);
+  const custRev   = Math.round(d.customerRevPerAcct * (BM[ST.biz] > .5 ? 1 : BM[ST.biz]*2));
+
+  // Sparkline colors per tile
+  const attColor  = attR>=90?"var(--green)":attR>=70?"var(--amber)":"var(--red)";
+  const covColor  = coverage>=3.5?"var(--green)":coverage>=2.5?"var(--amber)":"var(--red)";
+  const wrColor   = wrVal>=45?"var(--green)":wrVal>=30?"var(--amber)":"var(--red)";
+  const fcColor   = fcAcc>=85?"var(--green)":fcAcc>=70?"var(--amber)":"var(--red)";
+  const bkSpark   = sparkSVG(d.weeklyBookings,"#1251d3");
+  const rvSpark   = sparkSVG(d.weeklyRevenue, "#0b7a52");
+  const bkLast5   = d.weeklyBookings.slice(-5);
+  const bkTrend   = bkLast5[4]>bkLast5[0];
+
+  // ── SECTION 1: TILES ──────────────────────────────────────
+  document.getElementById("tiles-row").innerHTML = `
+
+    <div class="tile">
+      <div class="tile-accent" style="background:linear-gradient(90deg,#1251d3,#3b72f6);"></div>
+      <div class="tile-lbl">Bookings ${pLabel}</div>
+      <div class="tile-val flash">${fm(bookings)}</div>
+      <div class="tile-sub">${arr(d.bookYoy)} <span style="color:var(--t4);">vs LY</span></div>
+      ${bkSpark}
+    </div>
+
+    <div class="tile">
+      <div class="tile-accent" style="background:linear-gradient(90deg,#0b7a52,#12a06e);"></div>
+      <div class="tile-lbl">Revenue ${pLabel}</div>
+      <div class="tile-val flash">${fm(rev)}</div>
+      <div class="tile-sub">${arr(d.yoy)} <span style="color:var(--t4);">vs LY</span></div>
+      ${rvSpark}
+    </div>
+
+    <div class="tile">
+      <div class="tile-accent" style="background:linear-gradient(90deg,${attR>=90?'#0b7a52':attR>=70?'#b35a00':'#c11f1f'},${attR>=90?'#12a06e':attR>=70?'#e87c1e':'#e53535'});"></div>
+      <div class="tile-lbl">Quota Attainment</div>
+      <div class="tile-val flash" style="color:${attColor};">${attR}%</div>
+      <div class="tile-bar"><div class="tile-bar-fill" style="width:${Math.min(100,attPct)}%;background:${attColor};"></div></div>
+      <div class="tile-sub">Target: <b style="color:var(--t1);">${fm(quota)}</b></div>
+    </div>
+
+    <div class="tile">
+      <div class="tile-accent" style="background:linear-gradient(90deg,${gapToGoal>=0?'#0b7a52':'#c11f1f'},${gapToGoal>=0?'#12a06e':'#e53535'});"></div>
+      <div class="tile-lbl">Gap to Goal ($)</div>
+      <div class="tile-val flash" style="color:${gapToGoal>=0?'var(--green)':'var(--red)'};">${gapToGoal>=0?'+':''}${fm(gapToGoal)}</div>
+      <div class="tile-sub">${gapToGoal>=0?'<span class="up">▲ Ahead of AOP</span>':'<span class="dn">▼ Behind AOP</span>'}</div>
+      <div class="tile-gap" style="background:${gapToGoal>=0?'var(--green-lt)':'var(--red-lt)'};color:${gapToGoal>=0?'var(--green)':'var(--red)'};">
+        ${gapToGoal>=0?'On Track':'Need ' + fm(Math.abs(gapToGoal)) + ' more'}
+      </div>
+    </div>
+
+    <div class="tile">
+      <div class="tile-accent" style="background:linear-gradient(90deg,${covColor},${coverage>=3.5?'#12a06e':coverage>=2.5?'#e87c1e':'#e53535'});"></div>
+      <div class="tile-lbl">Pipeline Coverage</div>
+      <div class="tile-val flash" style="color:${covColor};">${coverage}×</div>
+      <div class="tile-sub">Open: <b style="color:var(--t1);">${fm(pipe)}</b></div>
+      <div class="tile-gap" style="background:${coverage>=3.5?'var(--green-lt)':coverage>=2.5?'var(--amber-lt)':'var(--red-lt)'};color:${covColor};">
+        ${coverage>=3.5?'Green ✓':coverage>=2.5?'Amber ⬤':'Red — Build pipeline'}
+      </div>
+    </div>
+
+    <div class="tile">
+      <div class="tile-accent" style="background:linear-gradient(90deg,${wrColor},${wrVal>=45?'#12a06e':wrVal>=30?'#e87c1e':'#e53535'});"></div>
+      <div class="tile-lbl">Win Rate</div>
+      <div class="tile-val flash" style="color:${wrColor};">${wrVal}%</div>
+      <div class="tile-bar"><div class="tile-bar-fill" style="width:${wrVal}%;background:${wrColor};"></div></div>
+      <div class="tile-sub">Cycle: <b style="color:var(--t1);">${d.cycle}d</b> avg</div>
+    </div>
+
+    <div class="tile">
+      <div class="tile-accent" style="background:linear-gradient(90deg,#5b21b6,#8b5cf6);"></div>
+      <div class="tile-lbl">Customer # (Active)</div>
+      <div class="tile-val flash" style="color:var(--purple);">${custCount}</div>
+      <div class="tile-sub">Active accounts · ${pLabel}</div>
+      <div class="tile-gap" style="background:var(--purple-lt);color:var(--purple);">
+        ${Math.round(d.activeCov)}% coverage
+      </div>
+    </div>
+
+    <div class="tile" style="border-right:none;">
+      <div class="tile-accent" style="background:linear-gradient(90deg,#0880a0,#0ea5c9);"></div>
+      <div class="tile-lbl">Customer Rev / Acct</div>
+      <div class="tile-val flash" style="color:var(--teal);">${fm(custRev)}</div>
+      <div class="tile-sub">Avg revenue per account</div>
+      <div class="tile-gap" style="background:var(--teal-lt);color:var(--teal);">
+        ${fm(rev)} total · ${custCount} accts
+      </div>
+    </div>
+  `;
+
+  // ── SECTION 2A: CHART ──────────────────────────────────────
+  const bk = d.weeklyBookings, rv = d.weeklyRevenue, ao = d.weeklyAOP;
+  const wMax = Math.max(...bk,...ao)*1.12;
+  const W=480, H=120;
+  const xS = W/(bk.length-1);
+  const yS = v => H-(v/wMax*H);
+  const mkPath = (arr,stroke,dash="") => {
+    const pts = arr.map((v,i)=>`${i===0?'M':'L'}${(i*xS).toFixed(1)},${yS(v).toFixed(1)}`).join(" ");
+    return `<path d="${pts}" fill="none" stroke="${stroke}" stroke-width="1.8" stroke-dasharray="${dash}" opacity=".9"/>`;
+  };
+  const mkArea = (arr,fill) => {
+    const pts = arr.map((v,i)=>`${(i*xS).toFixed(1)},${yS(v).toFixed(1)}`).join(" ");
+    const n=arr.length-1;
+    return `<path d="M0,${yS(arr[0]).toFixed(1)} L${pts} L${(n*xS).toFixed(1)},${H} L0,${H} Z" fill="${fill}" opacity=".07"/>`;
+  };
+  const grid = [wMax*.25,wMax*.5,wMax*.75].map(v=>`<line x1="0" y1="${yS(v).toFixed(1)}" x2="${W}" y2="${yS(v).toFixed(1)}" stroke="#e2e8f2" stroke-width="1"/>`).join("");
+  const xlbls = bk.map((_,i)=>{
+    const lbl = i===0?"W1":i===bk.length-1?"W13":(i%4===0?`W${i+1}`:"");
+    return lbl ? `<text x="${(i*xS).toFixed(1)}" y="${H+11}" font-size="8" fill="#8496b0" text-anchor="middle">${lbl}</text>` : "";
+  }).join("");
+  const dots = [
+    `<circle cx="${((bk.length-1)*xS).toFixed(1)}" cy="${yS(bk[bk.length-1]).toFixed(1)}" r="3" fill="#1251d3"/>`,
+    `<circle cx="${((rv.length-1)*xS).toFixed(1)}" cy="${yS(rv[rv.length-1]).toFixed(1)}" r="3" fill="#0b7a52"/>`,
+  ].join("");
+  document.getElementById("trend-chart").innerHTML = grid+mkArea(bk,"#1251d3")+mkArea(rv,"#0b7a52")+mkPath(bk,"#1251d3")+mkPath(rv,"#0b7a52")+mkPath(ao,"#b35a00","5 3")+dots+xlbls;
+  document.getElementById("chart-kpis").innerHTML = `<span style="font-size:9px;color:var(--t3);">Bk ${arr(d.bookYoy)} &nbsp;·&nbsp; Rev ${arr(d.yoy)}</span>`;
+  const lastBk = Math.round(bk[bk.length-1]*1000*BM[ST.biz]);
+  const lastRv = Math.round(rv[rv.length-1]*1000*BM[ST.biz]);
+  const lastAo = Math.round(ao[ao.length-1]*1000*BM[ST.biz]);
+  const rvVsAop = lastAo>0?Math.round((lastRv-lastAo)/lastAo*100):0;
+  document.getElementById("chart-sub-strip").innerHTML = `
+    <div style="padding:10px 16px;border-right:1px solid var(--border);">
+      <div style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px;">Last Wk Bookings</div>
+      <div style="font-family:'DM Mono',monospace;font-size:15px;font-weight:600;color:#1251d3;">${fm(lastBk)}</div>
+    </div>
+    <div style="padding:10px 16px;border-right:1px solid var(--border);">
+      <div style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px;">Last Wk Revenue</div>
+      <div style="font-family:'DM Mono',monospace;font-size:15px;font-weight:600;color:#0b7a52;">${fm(lastRv)}</div>
+    </div>
+    <div style="padding:10px 16px;">
+      <div style="font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px;">Rev vs AOP</div>
+      <div style="font-family:'DM Mono',monospace;font-size:15px;font-weight:600;color:${rvVsAop>=0?'var(--green)':'var(--red)'};">${rvVsAop>=0?'+':''}${rvVsAop}%</div>
+    </div>
+  `;
+
+  // ── SECTION 2B: CROSS-SELL ─────────────────────────────────
+  const cs = d.crossSell;
+  const glR = Math.round(cs.glassRev*m);
+  const meR = Math.round(cs.metalRev*m);
+  const hwR = Math.round(cs.hwRev*m);
+  const totR = glR+meR+hwR;
+  const gPct = totR>0?Math.round(glR/totR*100):0;
+  const mPct = totR>0?Math.round(meR/totR*100):0;
+  const hPct = totR>0?Math.round(hwR/totR*100):0;
+  const upliftOpp = Math.round(cs.singleAccts * cs.upliftPerAcct * pm);
+  document.getElementById("cs-badge").textContent = fm(upliftOpp) + " uplift opp";
+  document.getElementById("cs-badge").className = "badge " + (cs.singleAccts>35?"b-red":"b-amber");
+  document.getElementById("mix-strip").innerHTML = `
+    <div class="mix-item">
+      <div class="mix-biz"><div class="mix-dot" style="background:#1251d3;"></div>Metal</div>
+      <div class="mix-val">${fm(meR)}</div>
+      <div class="mix-pct" style="color:${mPct>=30?'var(--green)':'var(--amber)'};">
+        <span style="width:7px;height:7px;border-radius:50%;background:${mPct>=30?'var(--green)':'var(--amber)'};display:inline-block;"></span>${mPct}%
+      </div>
+      <div class="mix-bar-bg"><div class="mix-bar-fill" style="width:${mPct}%;background:#1251d3;"></div></div>
+    </div>
+    <div class="mix-item">
+      <div class="mix-biz"><div class="mix-dot" style="background:#f59e0b;"></div>Glass</div>
+      <div class="mix-val">${fm(glR)}</div>
+      <div class="mix-pct" style="color:${gPct>=40?'var(--green)':'var(--amber)'};">
+        <span style="width:7px;height:7px;border-radius:50%;background:${gPct>=40?'var(--green)':'var(--amber)'};display:inline-block;"></span>${gPct}%
+      </div>
+      <div class="mix-bar-bg"><div class="mix-bar-fill" style="width:${gPct}%;background:#f59e0b;"></div></div>
+    </div>
+    <div class="mix-item">
+      <div class="mix-biz"><div class="mix-dot" style="background:#0880a0;"></div>Hardware</div>
+      <div class="mix-val">${fm(hwR)}</div>
+      <div class="mix-pct" style="color:${hPct>=15?'var(--green)':'var(--red)'};">
+        <span style="width:7px;height:7px;border-radius:50%;background:${hPct>=15?'var(--green)':'var(--red)'};display:inline-block;"></span>${hPct}%
+      </div>
+      <div class="mix-bar-bg"><div class="mix-bar-fill" style="width:${hPct}%;background:#0880a0;"></div></div>
+    </div>
+  `;
+  document.getElementById("cs-matrix").innerHTML = cs.matrix.map(c=>{
+    const sv = Math.round(c.val*m);
+    return `<div class="cs-cell ${c.single?'cs-single':'cs-multi'}">
+      <div class="cs-cell-lbl">${c.label}</div>
+      <div class="cs-cell-val">${fm(sv)}</div>
+      <div class="cs-cell-cnt">${c.accts} accounts</div>
+    </div>`;
+  }).join("");
+
+  // ── SECTION 2C: INCENTIVES ─────────────────────────────────
+  const incS  = Math.round(d.incEligible*m);
+  const incE  = Math.round(d.incEst*Math.max(.4,pm));
+  const incP  = Math.round(d.incPace*(1/Math.max(.3,pm)));
+  const paceW = d.incMax>0?Math.min(100,incP/d.incMax*100):0;
+  const pBarC = paceW>=80?"var(--green)":paceW>=50?"var(--amber)":"var(--red)";
+  document.getElementById("inc-grid").innerHTML = `
+    <div class="inc-item">
+      <div class="inc-lbl">Incentive Eligible ($)</div>
+      <div class="inc-val">${fm(incS)}</div>
+      <div class="inc-sub">Qualifying revenue · ${pLabel}</div>
+    </div>
+    <div class="inc-item">
+      <div class="inc-lbl">Est. Incentive (MTD)</div>
+      <div class="inc-val" style="color:var(--amber);">$${incE.toLocaleString()}</div>
+      <div class="inc-sub">At current attainment rate</div>
+    </div>
+    <div class="inc-item">
+      <div class="inc-lbl">Pace Incentive ($)</div>
+      <div class="inc-val" style="color:var(--teal);">$${incP.toLocaleString()}</div>
+      <div class="inc-sub">If current pace continues</div>
+    </div>
+  `;
+  document.getElementById("inc-max-row").innerHTML = `
+    <div class="inc-max-lbl">Max Payout If Target Hit ($)</div>
+    <div class="inc-max-inner">
+      <div class="inc-max-val">$${d.incMax.toLocaleString()}</div>
+      <div class="inc-pbar-wrap">
+        <div class="inc-pbar-labels">
+          <span>Current pace &nbsp;<b style="color:var(--t1);">$${incP.toLocaleString()}</b></span>
+          <span>Max &nbsp;<b style="color:var(--t1);">$${d.incMax.toLocaleString()}</b></span>
+        </div>
+        <div class="inc-pbar-track"><div class="inc-pbar-fill" style="width:${paceW.toFixed(1)}%;background:${pBarC};"></div></div>
+        <div class="inc-pbar-note">${100-attR>0?`Need <b style="color:var(--t1);">${fm(remaining)}</b> more revenue to hit max payout`:'<span style="color:var(--green);font-weight:700;">✓ Quota hit — max payout unlocked</span>'}</div>
+      </div>
+    </div>
+  `;
+  const accStatus = attR>=100?"ACCELERATOR":attR>=90?"APPROACHING":"STANDARD";
+  const accBg     = attR>=100?"var(--green-lt)":attR>=90?"var(--amber-lt)":"var(--red-lt)";
+  const accTxt    = attR>=100?"var(--green)":attR>=90?"var(--amber)":"var(--red)";
+  const accDot    = attR>=100?"var(--green)":attR>=90?"var(--amber)":"var(--red)";
+  const accNote   = attR>=100?"🎯 Accelerator rate active on all incremental revenue":attR>=90?`${100-attR}% to accelerator threshold — push for it`:`${100-attR}% below threshold`;
+  document.getElementById("inc-accel-row").innerHTML = `
+    <div class="inc-accel-lbl">Accelerator Status</div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div class="accel-pill" style="background:${accBg};color:${accTxt};">
+        <div class="accel-dot" style="background:${accDot};"></div>${accStatus}
+      </div>
+      <span style="font-size:10px;color:var(--t3);">${accNote}</span>
+    </div>
+  `;
+
+  // ── SECTION 3A: QUOTES + FUNNEL ───────────────────────────
+  const q = d.quotes;
+  const qOpenCount = Math.round(q.openCount * pm);
+  const qOpenVal   = Math.round(q.openVal   * pm * BM[ST.biz]);
+  const qConvCount = Math.round(q.convertedCount * pm);
+  const qConvVal   = Math.round(q.convertedVal   * pm * BM[ST.biz]);
+  const qElpCount  = Math.round(q.elapsedCount   * pm);
+  const qElpVal    = Math.round(q.elapsedVal     * pm * BM[ST.biz]);
+  document.getElementById("quotes-grid").innerHTML = `
+    <div class="q-cell">
+      <div class="q-cell-label">Quotes Open</div>
+      <div class="q-cell-row">
+        <span class="q-num-val" style="color:var(--blue);">${fm(qOpenVal)}</span>
+        <span class="q-sep">·</span>
+        <span class="q-num">${qOpenCount} quotes</span>
+      </div>
+    </div>
+    <div class="q-cell">
+      <div class="q-cell-label">Quotes Converted</div>
+      <div class="q-cell-row">
+        <span class="q-num-val" style="color:var(--green);">${fm(qConvVal)}</span>
+        <span class="q-sep">·</span>
+        <span class="q-num">${qConvCount} quotes</span>
+      </div>
+    </div>
+    <div class="q-cell">
+      <div class="q-cell-label">Quotes Elapsed</div>
+      <div class="q-cell-row">
+        <span class="q-num-val" style="color:var(--red);">${fm(qElpVal)}</span>
+        <span class="q-sep">·</span>
+        <span class="q-num">${qElpCount} quotes</span>
+      </div>
+    </div>
+  `;
+  const fMax = d.funnel[0].val * pm * BM[ST.biz];
+  document.getElementById("pipe-badge").textContent = fm(pipe) + " open";
+  document.getElementById("funnel-rows").innerHTML = d.funnel.map(f=>{
+    const fv = Math.round(f.val * pm * BM[ST.biz]);
+    const bw = fMax>0?Math.max(8, Math.round(fv/fMax*94)):8;
+    const oc = Math.round(f.opps*pm);
+    const showInside = bw > 28;
+    return `<div class="fn-row">
+      <div class="fn-stage">${f.stage}</div>
+      <div class="fn-bar-wrap">
+        <div class="fn-bar" style="width:${bw}%;background:${f.color};">
+          ${showInside ? `<span style="opacity:.95;">${fm(fv)}</span>` : ""}
+        </div>
+      </div>
+      <div class="fn-right">
+        <div class="fn-val" style="color:${f.color};">${!showInside ? fm(fv) : ""}</div>
+        <div class="fn-opps">${oc} opps</div>
+      </div>
+    </div>`;
+  }).join("");
+
+  // ── SECTION 3B: TOP ACCOUNTS ───────────────────────────────
+  const active   = d.accounts.filter(a=>a.status==="Active").length;
+  const atRisk   = d.accounts.filter(a=>a.status==="At Risk").length;
+  const churning = d.accounts.filter(a=>a.status==="Churning").length;
+  document.getElementById("health-badges").innerHTML =
+    `<span class="badge b-green">${active} Active</span>` +
+    (atRisk   ? `<span class="badge b-amber">${atRisk} At Risk</span>` : "") +
+    (churning ? `<span class="badge b-red">${churning} Churning</span>` : "");
+  document.getElementById("acct-tbody").innerHTML = d.accounts.map(a=>{
+    const sr = Math.round(a.rev*pm*SM[ST.seg]);
+    return `<tr>
+      <td><div class="at-name">${a.name}</div><div class="at-sub">${a.sub}</div></td>
+      <td style="font-family:'DM Mono',monospace;font-weight:600;">${sr>0?fm(sr):'<span class="dn">$0</span>'}</td>
+      <td>${arr(a.vsLY)}</td>
+      <td>${statusBadge(a.status)}</td>
+    </tr>`;
+  }).join("");
+
+  // ── SECTION 3C: THIS WEEK ──────────────────────────────────
+  document.getElementById("visits-done").textContent = d.visitsThisWeek;
+  document.getElementById("visits-done-sub").textContent = d.visitsThisWeek + " locations this week";
+  document.getElementById("visits-plan").textContent = d.visitsNextWeek;
+  document.getElementById("visits-plan-sub").textContent = d.visitsNextWeek + " locations scheduled";
+  document.getElementById("new-logos").textContent = "+" + Math.max(0, Math.round(d.newLogos*pm));
+  document.getElementById("activity-list").innerHTML = d.activity.map(a=>`
+    <div class="act-row">
+      <div class="act-dot" style="background:${a.dot};"></div>
+      <div class="act-body">
+        <div class="act-t">${a.title}</div>
+        <div class="act-s">${a.sub} ${a.tag?`<span class="act-tag">· ${a.tag}</span>`:""}</div>
+      </div>
+      <div class="act-time">${a.time}</div>
+    </div>`).join("");
+
+  // ── SECTION 4A: BLOCKERS ───────────────────────────────────
+  const blocks = d.blocks;
+  const totalBlocked = blocks.reduce((s,b)=>s+b.val,0);
+  const creditB  = blocks.filter(b=>b.type==="Credit").reduce((s,b)=>s+b.val,0);
+  const billingB = blocks.filter(b=>b.type==="Billing").reduce((s,b)=>s+b.val,0);
+  const delivB   = blocks.filter(b=>b.type==="Delivery").reduce((s,b)=>s+b.val,0);
+  document.getElementById("blocks-badge").textContent =
+    blocks.length > 0 ? `${blocks.length} active · ${fm(totalBlocked)}` : "None active";
+  document.getElementById("blocks-badge").className = "badge " + (blocks.length>0?"b-red":"b-green");
+  document.getElementById("blocks-tbody").innerHTML = blocks.length > 0
+    ? blocks.map(b=>{
+        const typeCls = b.type==="Credit"?"bt-credit":b.type==="Billing"?"bt-billing":"bt-delivery";
+        return `<tr>
+          <td><div class="block-name">${b.name}</div></td>
+          <td><span class="btype ${typeCls}">${b.type}</span></td>
+          <td><div class="block-reason">${b.reason}</div></td>
+          <td style="font-family:'DM Mono',monospace;font-weight:700;color:var(--red);">${fm(b.val)}</td>
+        </tr>`;
+      }).join("")
+    : `<tr><td colspan="4" style="padding:16px 14px;font-size:11px;color:var(--green);font-weight:600;">✓ No active blocks in territory</td></tr>`;
+  document.getElementById("blocker-summary").innerHTML = `
+    <div class="bs-seg"><div class="bs-seg-lbl">Credit Blocks</div><div class="bs-seg-val" style="color:${creditB>0?'var(--red)':'var(--green)'};">${creditB>0?fm(creditB):'—'}</div></div>
+    <div class="bs-seg"><div class="bs-seg-lbl">Billing Blocks</div><div class="bs-seg-val" style="color:${billingB>0?'var(--amber)':'var(--green)'};">${billingB>0?fm(billingB):'—'}</div></div>
+    <div class="bs-seg"><div class="bs-seg-lbl">Delivery Blocks</div><div class="bs-seg-val" style="color:${delivB>0?'var(--purple)':'var(--green)'};">${delivB>0?fm(delivB):'—'}</div></div>
+    <div class="bs-seg"><div class="bs-seg-lbl">Total Blocked</div><div class="bs-seg-val" style="color:${totalBlocked>0?'var(--red)':'var(--green)'};">${totalBlocked>0?fm(totalBlocked):'$0'}</div></div>
+  `;
+
+  // ── SECTION 4B: STALE DEALS ────────────────────────────────
+  const stale = d.stale;
+  document.getElementById("stale-badge").textContent =
+    stale.length > 0 ? `${stale.length} deals at risk` : "All clear";
+  document.getElementById("stale-badge").className = "badge " + (stale.length>0?"b-amber":"b-green");
+  document.getElementById("stale-tbody").innerHTML = stale.length > 0
+    ? stale.map(s=>{
+        const dC = s.days>21?"var(--red)":s.days>10?"var(--amber)":"var(--t3)";
+        const fC = s.flag==="Churning"||s.flag==="No Touch"?"sf-r":s.flag==="Stale"||s.flag==="At Risk"?"sf-a":"sf-b";
+        return `<tr>
+          <td><div class="block-name">${s.name}</div></td>
+          <td style="font-family:'DM Mono',monospace;font-weight:700;color:${dC};">${s.days}d</td>
+          <td style="font-family:'DM Mono',monospace;font-size:10px;">${s.val>0?fm(s.val):'—'}</td>
+          <td><span class="stale-flag ${fC}">${s.flag}</span></td>
+        </tr>`;
+      }).join("")
+    : `<tr><td colspan="4" style="padding:16px 14px;font-size:11px;color:var(--green);font-weight:600;">✓ No stale deals — all opportunities have recent activity</td></tr>`;
+
+  // ── BOTTOM STRIP ───────────────────────────────────────────
+  const mtdRev = Math.round(d.rev*PM.MTD*BM[ST.biz]*SM[ST.seg]);
+  document.getElementById("btm-strip").innerHTML = [
+    {lbl:"MTD vs Last Month", val:`<span class="${d.mtdVsLM>=0?'up':'dn'}">${d.mtdVsLM>=0?'▲':'▼'}${Math.abs(d.mtdVsLM).toFixed(1)}%</span>`, sub:fm(mtdRev)},
+    {lbl:"YoY Growth %", val:`<span class="${d.yoy>=0?'up':'dn'}">${d.yoy>=0?'+':''}${d.yoy.toFixed(1)}%</span>`, sub:"vs same period LY"},
+    {lbl:"Last Touch Age", val:`<span class="${d.lastTouch<=10?'up':d.lastTouch<=21?'am':'dn'}">${d.lastTouch}d</span>`, sub:"avg across accounts · target <10d"},
+    {lbl:"Active Acct Coverage", val:`<span class="${d.activeCov>=80?'up':d.activeCov>=60?'am':'dn'}">${d.activeCov}%</span>`, sub:"target >80% of territory"},
+    {lbl:"Avg Sales Cycle", val:`<span class="${d.cycle<=35?'up':d.cycle<=50?'am':'dn'}">${d.cycle}d</span>`, sub:`${d.cycle<=35?'vs':'vs'} 35d benchmark`},
+    {lbl:"Conversion Rate", val:`<span class="${d.conversion>=40?'up':d.conversion>=25?'am':'dn'}">${d.conversion}%</span>`, sub:"closed / open opps · target >40%"},
+  ].map(i=>`<div class="bsi">
+    <div><div class="bsi-lbl">${i.lbl}</div><div class="bsi-val">${i.val}</div></div>
+    <div style="font-size:10px;color:var(--t3);text-align:right;">${i.sub}</div>
+  </div>`).join("");
+}
+
+// ════════════════════════════════════════════════════════════
+// CONTROLS
+// ════════════════════════════════════════════════════════════
+function setPeriod(p,btn){
+  ST.period=p;
+  document.querySelectorAll('#pstrip .ps').forEach(b=>b.classList.toggle('on',b===btn));
+  render();
+}
+function setBiz(b,btn){
+  ST.biz=b;
+  document.querySelectorAll('#biz-grp .bb').forEach(x=>x.classList.toggle('on',x===btn));
+  render();
+}
+function applyFilters(){
+  ST.seller=document.getElementById('f-seller').value;
+  ST.seg=document.getElementById('f-seg').value;
+  render();
+}
+function cycleSeller(){
+  const keys=Object.keys(D);
+  ST.seller=keys[(keys.indexOf(ST.seller)+1)%keys.length];
+  document.getElementById('f-seller').value=ST.seller;
+  render();
+}
+function resetAll(){
+  ST={seller:"jordan",period:"QTD",biz:"all",seg:"all"};
+  document.getElementById('f-seller').value="jordan";
+  document.getElementById('f-seg').value="all";
+  document.querySelectorAll('#pstrip .ps').forEach((b,i)=>b.classList.toggle('on',i===2));
+  document.querySelectorAll('#biz-grp .bb').forEach((b,i)=>b.classList.toggle('on',i===0));
+  render();
+}
+document.addEventListener('DOMContentLoaded',render);
+</script>
+<!-- METRIC DEFINITIONS MODAL -->
+<div class="modal-overlay" id="mmodal">
+  <div class="modal" onclick="event.stopPropagation()">
+
+    <div class="modal-hdr">
+      <div class="modal-hdr-left">
+        <div class="modal-hdr-icon">📊</div>
+        <div>
+          <div class="modal-title">Metric Definitions &amp; Logic</div>
+          <div class="modal-sub">OBE Sales Rep Dashboard · All metrics, sources &amp; RAG thresholds</div>
+        </div>
+      </div>
+      <button class="modal-x" onclick="closeModal()">✕</button>
+    </div>
+
+    <div class="modal-fbar">
+      <input class="m-search" id="msearch" placeholder="Search metrics…" oninput="mSearch()" />
+      <button class="mfb on"  onclick="mFilter('all',this)">All</button>
+      <button class="mfb" onclick="mFilter('fin',this)">Financials &amp; Quota</button>
+      <button class="mfb" onclick="mFilter('pipe',this)">Pipeline &amp; Forecast</button>
+      <button class="mfb" onclick="mFilter('funnel',this)">Funnel Stages</button>
+      <button class="mfb" onclick="mFilter('act',this)">Sales Activities</button>
+      <button class="mfb" onclick="mFilter('block',this)">Blockers</button>
+      <button class="mfb" onclick="mFilter('inc',this)">Incentives</button>
+    </div>
+
+    <div class="modal-body">
+
+      <!-- FINANCIALS & QUOTA -->
+      <div class="msec" data-sec="fin">
+        <div class="msec-hdr"><div class="msec-dot" style="background:var(--blue);"></div>Financials &amp; Quota</div>
+        <table class="mtbl">
+          <thead><tr><th>Metric</th><th style="width:28%">Definition</th><th style="width:22%">Calculation Logic</th><th>Data Source</th><th>RAG Thresholds</th></tr></thead>
+          <tbody>
+            <tr class="mrow" data-sec="fin"><td><div class="m-name">Bookings ($)</div></td><td>Sum of all order values booked in the period, regardless of shipment or invoice status. Represents demand captured.</td><td>Σ(Order Value) where Order Date in period AND Status ≠ Cancelled</td><td><div class="m-src">SAP SD · Order Entry</div></td><td><span class="rag-g">● ≥100% AOP pace</span><br><span class="rag-a">● 85–99%</span><br><span class="rag-r">● &lt;85%</span></td></tr>
+            <tr class="mrow" data-sec="fin"><td><div class="m-name">Revenue ($)</div></td><td>Net invoiced amount received in the period. Excludes returns, credits, and freight. Primary P&amp;L line.</td><td>Σ(Invoice Amount) − Returns − Credits − Freight; Invoice Date in period</td><td><div class="m-src">SAP FI · Billing Docs</div></td><td><span class="rag-g">● ≥90% attainment</span><br><span class="rag-a">● 70–89%</span><br><span class="rag-r">● &lt;70%</span></td></tr>
+            <tr class="mrow" data-sec="fin"><td><div class="m-name">YoY Growth %</div></td><td>Percentage change in Revenue vs same period prior year. Measures organic growth trajectory.</td><td>(Revenue TY − Revenue LY) ÷ Revenue LY × 100. Same calendar period, same territory.</td><td><div class="m-src">SAP FI · Billing History</div></td><td><span class="rag-g">● &gt;0% (growing)</span><br><span class="rag-a">● −5% to 0%</span><br><span class="rag-r">● &lt;−5%</span></td></tr>
+            <tr class="mrow" data-sec="fin"><td><div class="m-name">Gap to Goal ($)</div></td><td>Dollar variance between actual Revenue and AOP / individual quota for the period. Positive = ahead, negative = behind.</td><td>Actual Revenue − (Annual Quota × Period Fraction). Period Fraction = elapsed days ÷ total period days.</td><td><div class="m-src">SAP FI + Quota System</div></td><td><span class="rag-g">● ≥$0 (ahead)</span><br><span class="rag-a">● Within −10% of quota</span><br><span class="rag-r">● &gt;−10% behind</span></td></tr>
+            <tr class="mrow" data-sec="fin"><td><div class="m-name">Quota Attainment %</div></td><td>Percentage of individual sales quota achieved in the period. Primary comp plan eligibility metric.</td><td>Actual Revenue ÷ Period Quota × 100. Period Quota = Annual Quota × Period Fraction.</td><td><div class="m-src">SAP FI + Quota System</div></td><td><span class="rag-g">● ≥90%</span><br><span class="rag-a">● 70–89%</span><br><span class="rag-r">● &lt;70%</span></td></tr>
+            <tr class="mrow" data-sec="fin"><td><div class="m-name">Pipeline Coverage (×)</div></td><td>Ratio of Open Pipeline to Remaining Quota. Indicates ability to make quota from existing opportunities.</td><td>Open Pipeline $ ÷ Remaining Quota $. Remaining = Period Quota − Revenue To Date.</td><td><div class="m-src">Salesforce CRM + Quota System</div></td><td><span class="rag-g">● ≥3.5×</span><br><span class="rag-a">● 2.5–3.4×</span><br><span class="rag-r">● &lt;2.5×</span></td></tr>
+            <tr class="mrow" data-sec="fin"><td><div class="m-name">Customer # (Active)</div></td><td>Count of accounts with at least one revenue transaction in the current period.</td><td>COUNT(DISTINCT AccountID) where InvoiceDate in period AND NetRevenue &gt; 0 AND TerritoryID = Rep</td><td><div class="m-src">SAP FI · Customer Master</div></td><td><span class="rag-g">● ≥80% of base</span><br><span class="rag-a">● 60–79%</span><br><span class="rag-r">● &lt;60%</span></td></tr>
+            <tr class="mrow" data-sec="fin"><td><div class="m-name">Customer Rev / Acct</div></td><td>Average revenue per active account. Measures wallet share and account penetration depth.</td><td>Total Net Revenue ÷ Count of Active Accounts (at least 1 invoice in period).</td><td><div class="m-src">SAP FI · Billing + Customer Master</div></td><td>Benchmarked vs prior period &amp; peer group. Directional trend — no fixed RAG.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- PIPELINE & FORECAST -->
+      <div class="msec" data-sec="pipe">
+        <div class="msec-hdr"><div class="msec-dot" style="background:var(--purple);"></div>Pipeline &amp; Forecast</div>
+        <table class="mtbl">
+          <thead><tr><th>Metric</th><th style="width:28%">Definition</th><th style="width:22%">Calculation Logic</th><th>Data Source</th><th>RAG Thresholds</th></tr></thead>
+          <tbody>
+            <tr class="mrow" data-sec="pipe"><td><div class="m-name">Open Pipeline ($)</div></td><td>Sum of all open opportunity amounts where CloseDate is future and Stage is not Closed Won/Lost.</td><td>Σ(OpportunityAmount) where Stage NOT IN ('Closed Won','Closed Lost') AND CloseDate ≥ Today</td><td><div class="m-src">Salesforce CRM · Opportunities</div></td><td>Evaluated via Coverage ratio (≥3.5× Green). Standalone: vs prior period trend.</td></tr>
+            <tr class="mrow" data-sec="pipe"><td><div class="m-name">Win Rate %</div></td><td>Percentage of closed opportunities by value that were Won. Measures sales effectiveness and qualification quality.</td><td>Σ(Won Opp Value) ÷ Σ(Won + Lost Value) × 100. Closed in period only.</td><td><div class="m-src">Salesforce CRM · Closed Opps</div></td><td><span class="rag-g">● ≥45%</span><br><span class="rag-a">● 30–44%</span><br><span class="rag-r">● &lt;30%</span></td></tr>
+            <tr class="mrow" data-sec="pipe"><td><div class="m-name">Conversion Rate %</div></td><td>Ratio of closed opportunities to total open opportunities at period start. Measures pipeline velocity.</td><td>COUNT(Closed Opps in Period) ÷ COUNT(Open Opps at Period Start) × 100</td><td><div class="m-src">Salesforce CRM · Opp History</div></td><td><span class="rag-g">● ≥40%</span><br><span class="rag-a">● 25–39%</span><br><span class="rag-r">● &lt;25%</span></td></tr>
+            <tr class="mrow" data-sec="pipe"><td><div class="m-name">Avg Sales Cycle (days)</div></td><td>Average elapsed days from Opportunity Created to Closed Won for deals closed in the period.</td><td>AVG(CloseWonDate − CreatedDate) for Closed Won opps in period. Excludes outliers &gt;365 days.</td><td><div class="m-src">Salesforce CRM · Closed Won Opps</div></td><td><span class="rag-g">● ≤35 days</span><br><span class="rag-a">● 36–50 days</span><br><span class="rag-r">● &gt;50 days</span></td></tr>
+            <tr class="mrow" data-sec="pipe"><td><div class="m-name">Last Touch Age (days)</div></td><td>Days since the last meaningful activity (call, email, meeting) was logged against an account or opportunity. Averaged across active accounts.</td><td>MAX(ActivityDate) per AccountID → Days since today. Averaged across all active accounts in territory.</td><td><div class="m-src">Salesforce CRM · Activity Log</div></td><td><span class="rag-g">● ≤10 days</span><br><span class="rag-a">● 11–21 days</span><br><span class="rag-r">● &gt;21 days</span></td></tr>
+            <tr class="mrow" data-sec="pipe"><td><div class="m-name">Active Acct Coverage %</div></td><td>Percentage of accounts in the rep's territory with at least one meaningful touch in the current period.</td><td>COUNT(Accounts with Activity in Period) ÷ COUNT(Total Territory Accounts) × 100</td><td><div class="m-src">Salesforce CRM · Accounts + Activity</div></td><td><span class="rag-g">● ≥80%</span><br><span class="rag-a">● 60–79%</span><br><span class="rag-r">● &lt;60%</span></td></tr>
+            <tr class="mrow" data-sec="pipe"><td><div class="m-name">Forecast ($)</div></td><td>Bottom-up revenue forecast from rep CRM commits and best-case weighted amounts by business line (Glass, Metal, HW).</td><td>Commit × 90% + Best Case × 50% + Upside × 25%. Summed by division (Glass, Metal, HW).</td><td><div class="m-src">Salesforce CRM · Forecast Category</div></td><td>Accuracy target ≥85%. <span class="rag-a">● Amber</span> 70–84%. <span class="rag-r">● Red</span> &lt;70%.</td></tr>
+            <tr class="mrow" data-sec="pipe"><td><div class="m-name">Forecast Accuracy %</div></td><td>How close the submitted forecast was to actual revenue for a closed period. Measures forecast discipline and CRM hygiene.</td><td>1 − (|Forecast − Actual| ÷ Actual) × 100. Rolling 3-period average on closed periods.</td><td><div class="m-src">Salesforce CRM + SAP FI</div></td><td><span class="rag-g">● ≥85%</span><br><span class="rag-a">● 70–84%</span><br><span class="rag-r">● &lt;70%</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- FUNNEL STAGES -->
+      <div class="msec" data-sec="funnel">
+        <div class="msec-hdr"><div class="msec-dot" style="background:var(--teal);"></div>Quotes &amp; Pipeline Funnel Stages</div>
+        <table class="mtbl">
+          <thead><tr><th>Stage / Metric</th><th style="width:28%">Definition</th><th style="width:22%">Entry / Exit Criteria</th><th>Data Source</th><th>Notes &amp; Probability</th></tr></thead>
+          <tbody>
+            <tr class="mrow" data-sec="funnel"><td><div class="m-name">Quotes Open</div></td><td>Count and value of all active formal SAP quotes not yet converted, rejected, or expired.</td><td>SAP Quotation where Status = Open AND Validity End Date ≥ Today</td><td><div class="m-src">SAP SD · Quotations (VA21)</div></td><td>Formal pricing documents sent to customers. Separate from CRM opps. Conversion target &gt;60%.</td></tr>
+            <tr class="mrow" data-sec="funnel"><td><div class="m-name">Quotes Converted</div></td><td>Quotes converted to sales orders in the period. Measures quoting effectiveness and close rate.</td><td>SAP Quotation where follow-on Sales Order created in period. Linked via SAP document chain.</td><td><div class="m-src">SAP SD · Quotation → Order Chain</div></td><td>Conversion Rate = Converted ÷ (Converted + Elapsed). Target &gt;60%.</td></tr>
+            <tr class="mrow" data-sec="funnel"><td><div class="m-name">Quotes Elapsed</div></td><td>Quotes past validity date with no conversion. Represents stalled or lost quoting activity.</td><td>SAP Quotation where Status = Expired OR Validity End &lt; Today AND no follow-on order exists.</td><td><div class="m-src">SAP SD · Quotations (VA21)</div></td><td>High elapsed rate = pricing issues, slow follow-up, or lost deals. Review monthly with rep.</td></tr>
+            <tr class="mrow" data-sec="funnel"><td><div class="m-name">Prospect</div></td><td>Potential opportunity identified but need, budget, and timeline not yet confirmed.</td><td>Entry: Opp created in CRM. Exit: BANT confirmed → Qualify. Disqualified → Closed Lost.</td><td><div class="m-src">Salesforce CRM · Opportunities</div></td><td>Probability ~20–30%. Many will not progress — good early qualification is key.</td></tr>
+            <tr class="mrow" data-sec="funnel"><td><div class="m-name">Qualify</div></td><td>Need, budget, authority, and timeline confirmed. OBE has a viable path to win.</td><td>Entry: BANT confirmed, decision-maker identified. Exit: Proposal sent → Proposal. No path → Closed Lost.</td><td><div class="m-src">Salesforce CRM · Opportunities</div></td><td>Probability ~35–45%. Poor qualification here causes downstream pipeline inflation.</td></tr>
+            <tr class="mrow" data-sec="funnel"><td><div class="m-name">Proposal</div></td><td>Formal quote or bid submitted to customer. Closest stage to a SAP Quotation document.</td><td>Entry: Pricing sent to customer, SAP quote may be linked. Exit: Customer engages → Negotiation.</td><td><div class="m-src">Salesforce CRM + SAP SD</div></td><td>Probability ~50–60%. Deals frequently stall here — active follow-up required.</td></tr>
+            <tr class="mrow" data-sec="funnel"><td><div class="m-name">Negotiation</div></td><td>Customer engaged, pushing back on price, terms, delivery, or specs. Deal alive but not closed.</td><td>Entry: Customer counter-offer on any dimension. Exit: Agreement reached → Commit. No deal → Closed Lost.</td><td><div class="m-src">Salesforce CRM · Opportunities</div></td><td>Probability ~70–80%. Key discounting decisions made here. Manager review recommended.</td></tr>
+            <tr class="mrow" data-sec="funnel"><td><div class="m-name">Commit</div></td><td>Strong verbal commitment or PO imminent. Highest-confidence signal in the bottom-up forecast.</td><td>Entry: Written or verbal PO commitment. Exit: SAP order created → Closed Won. Lost → Closed Lost.</td><td><div class="m-src">Salesforce CRM · Forecast Category</div></td><td>Probability ~90%+. Not revenue until SAP invoice generated. Manager reviews weekly.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- SALES ACTIVITIES -->
+      <div class="msec" data-sec="act">
+        <div class="msec-hdr"><div class="msec-dot" style="background:var(--teal);"></div>Sales Activities</div>
+        <table class="mtbl">
+          <thead><tr><th>Metric</th><th style="width:28%">Definition</th><th style="width:22%">Calculation Logic</th><th>Data Source</th><th>RAG Thresholds</th></tr></thead>
+          <tbody>
+            <tr class="mrow" data-sec="act"><td><div class="m-name">Visits This Week</div></td><td>Count of in-person or virtual customer visits logged in CRM for the current week (Mon–Sun).</td><td>COUNT(Activities) where Type IN ('Visit','Meeting') AND ActivityDate in current ISO week AND OwnerId = Rep</td><td><div class="m-src">Salesforce CRM · Activity Log</div></td><td><span class="rag-g">● ≥4/week</span><br><span class="rag-a">● 2–3/week</span><br><span class="rag-r">● &lt;2/week</span></td></tr>
+            <tr class="mrow" data-sec="act"><td><div class="m-name">Visits Planned (Next Wk)</div></td><td>Count of planned visits in CRM for the upcoming week. Enables manager visibility into coverage plan before the week starts.</td><td>COUNT(Activities) where Type = 'Visit' AND ActivityDate in next ISO week AND Status = 'Planned' AND OwnerId = Rep</td><td><div class="m-src">Salesforce CRM · Activity Log (Future)</div></td><td>Target ≥5 planned by Friday. Directional — no hard RAG threshold.</td></tr>
+            <tr class="mrow" data-sec="act"><td><div class="m-name">New Logos</div></td><td>Net new accounts converted to first revenue in the period. Excludes re-activated dormant accounts.</td><td>COUNT(AccountIDs) where First Invoice Date in period AND no invoices in prior 24 months for same account.</td><td><div class="m-src">SAP FI · Customer Master + Billing History</div></td><td><span class="rag-g">● ≥2/month</span><br><span class="rag-a">● 1/month</span><br><span class="rag-r">● 0/month</span></td></tr>
+            <tr class="mrow" data-sec="act"><td><div class="m-name">Tool Adoption Score</div></td><td>Percentage of recommended sales tool interactions completed in the period (CRM updates, CPQ, ordering portal).</td><td>Weighted: CRM activity logging 40% + CPQ/Configure usage 35% + Customer portal orders 25%. Normalized 0–100%.</td><td><div class="m-src">Salesforce + CPQ System + Portal Log</div></td><td><span class="rag-g">● ≥80%</span><br><span class="rag-a">● 50–79%</span><br><span class="rag-r">● &lt;50%</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- BLOCKERS -->
+      <div class="msec" data-sec="block">
+        <div class="msec-hdr"><div class="msec-dot" style="background:var(--red);"></div>Blockers — Credit / Billing / Delivery &amp; Stale Pipeline</div>
+        <table class="mtbl">
+          <thead><tr><th>Metric</th><th style="width:28%">Definition</th><th style="width:22%">Identification Logic</th><th>Data Source</th><th>Resolution Path</th></tr></thead>
+          <tbody>
+            <tr class="mrow" data-sec="block"><td><div class="m-name">Credit-Blocked Accounts</div></td><td>Accounts with active credit holds preventing SAP order processing.</td><td>SAP VKM1/VKM3: Accounts where Credit Block = X AND TerritoryID = Rep. Refreshed daily by AR.</td><td><div class="m-src">SAP SD · Credit Mgmt (VKM1/VKM3)</div></td><td>Rep contacts AR team to initiate release. Target = 0 active blocks. Every block = revenue at risk.</td></tr>
+            <tr class="mrow" data-sec="block"><td><div class="m-name">Billing-Blocked Accounts</div></td><td>Accounts with invoice disputes or billing holds preventing invoice generation or release.</td><td>SAP VF02/VFX3: Billing docs with active Billing Block linked to rep's territory accounts.</td><td><div class="m-src">SAP FI · Billing (VFX3) + AR</div></td><td>Finance team owns resolution. Typically price discrepancy, incorrect PO, or disputed quantity.</td></tr>
+            <tr class="mrow" data-sec="block"><td><div class="m-name">Delivery-Blocked Accounts</div></td><td>Accounts where outbound delivery is stopped — disputes, logistics issues, or customer-requested holds.</td><td>SAP VL06O: Deliveries with active Delivery Block linked to open Sales Orders in rep's territory.</td><td><div class="m-src">SAP SD · Delivery (VL06O)</div></td><td>Logistics or Customer Service owns resolution. Rep escalates if blocking revenue recognition.</td></tr>
+            <tr class="mrow" data-sec="block"><td><div class="m-name">Total Blocked Revenue ($)</div></td><td>Dollar value of all open orders on hold across all block types. Direct revenue-at-risk measure.</td><td>Σ(Open Order Value) for all orders linked to blocked accounts in rep territory. Includes partial deliveries.</td><td><div class="m-src">SAP SD + FI · Combined Block Report</div></td><td>Any amount &gt;$0 requires action. Escalation: Rep → CSM → Finance VP.</td></tr>
+            <tr class="mrow" data-sec="block"><td><div class="m-name">Stale Deals (Pipeline at Risk)</div></td><td>Open CRM opportunities with no logged activity beyond the stale threshold. Deals that may be dying unnoticed.</td><td>Stage NOT IN ('Closed Won/Lost') AND MAX(ActivityDate) &lt; Today − Threshold. &gt;21d = Red, 11–21d = Amber, 8–10d = Blue flag.</td><td><div class="m-src">Salesforce CRM · Opps + Activity Log</div></td><td>Rep must log activity or advance/close. Manager reviews any deal &gt;21 days no-touch weekly.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- INCENTIVES -->
+      <div class="msec" data-sec="inc">
+        <div class="msec-hdr"><div class="msec-dot" style="background:var(--amber);"></div>Incentives &amp; Earnings</div>
+        <table class="mtbl">
+          <thead><tr><th>Metric</th><th style="width:28%">Definition</th><th style="width:22%">Calculation Logic</th><th>Data Source</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr class="mrow" data-sec="inc"><td><div class="m-name">Incentive Eligible ($)</div></td><td>Revenue on qualifying products/programs eligible for incentive calculation in the comp plan period (MTD).</td><td>Σ(Net Invoiced Revenue) for SKUs on approved incentive product list, in rep territory, MTD. Excludes freight, returns, credits.</td><td><div class="m-src">SAP FI · Billing + Comp Plan Product List</div></td><td>Product eligibility list refreshed each plan year by Sales Ops. Not all revenue qualifies.</td></tr>
+            <tr class="mrow" data-sec="inc"><td><div class="m-name">Est. Incentive (MTD)</div></td><td>Estimated payout based on current MTD attainment and the applicable comp plan tier rate.</td><td>Incentive Eligible $ × Commission Rate. Rate: &lt;90% = 0% · 90.1% = 0.244% · 100.1% = 0.275% · 105%+ = 0.329%</td><td><div class="m-src">SAP FI + Quota System + Comp Plan</div></td><td>Estimate only — not guaranteed. Final payout confirmed by HR/Finance at month-end close.</td></tr>
+            <tr class="mrow" data-sec="inc"><td><div class="m-name">Pace Incentive ($)</div></td><td>Projected full-month incentive if the rep continues at current MTD revenue pace through month-end.</td><td>Project full-period eligible revenue at current run-rate → apply applicable tier rate. Run-rate = MTD Eligible ÷ Elapsed Days × Total Days.</td><td><div class="m-src">SAP FI + Quota System + Comp Plan</div></td><td>Forward-looking estimate only. Assumes no change in pace or product mix.</td></tr>
+            <tr class="mrow" data-sec="inc"><td><div class="m-name">Max Payout ($)</div></td><td>Maximum incentive achievable if rep hits 100% of quota, triggering the highest tier rate (0.329% at 105%+).</td><td>Full Period Eligible Revenue (at 100% quota pace) × 0.329% (105%+ tier). Best-case scenario.</td><td><div class="m-src">Quota System + Comp Plan</div></td><td>Theoretical maximum at 105%+ attainment. Comp plan may have absolute $ caps — confirm with HR.</td></tr>
+            <tr class="mrow" data-sec="inc"><td><div class="m-name">Accelerator Status</div></td><td>Whether the rep has reached the accelerator threshold qualifying for higher payout rates.</td><td>ACCELERATOR = Attainment ≥100% · APPROACHING = 90–99% · STANDARD = &lt;90%. Drives commission rate on all eligible revenue.</td><td><div class="m-src">Quota System + Comp Plan Rules</div></td><td>Accelerator applies to all eligible revenue once threshold is hit. Confirm exact plan mechanics with HR/Finance.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- PRODUCT MIX -->
+      <div class="msec" data-sec="act">
+        <div class="msec-hdr"><div class="msec-dot" style="background:#f59e0b;"></div>Product Mix &amp; Cross-Sell</div>
+        <table class="mtbl">
+          <thead><tr><th>Metric</th><th style="width:28%">Definition</th><th style="width:22%">Calculation Logic</th><th>Data Source</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr class="mrow" data-sec="act"><td><div class="m-name">Metal / Glass / HW Revenue</div></td><td>Net invoiced revenue by business division in the rep's territory for the selected period.</td><td>Σ(Net Revenue) grouped by Division Code (SAP Material Master). Metal = Div 10 · Glass = Div 20 · HW = Div 30.</td><td><div class="m-src">SAP FI · Billing + Material Master</div></td><td>Share % = Division Rev ÷ Total Rev. Target mix varies by territory — check with Sales Ops for benchmarks.</td></tr>
+            <tr class="mrow" data-sec="act"><td><div class="m-name">Cross-Sell Matrix</div></td><td>Breakdown of accounts by number of OBE product lines purchased. Single-product accounts = cross-sell opportunity pool.</td><td>Per AccountID: COUNT(DISTINCT DivisionCode) from invoices in trailing 12 months. Group: 1 line (single), 2 lines, 3 lines (all).</td><td><div class="m-src">SAP FI · Billing + Material Master</div></td><td>Uplift estimate = COUNT(single-line accts) × avg revenue uplift for multi-line accounts in same segment (historical avg).</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div><!-- /modal-body -->
+  </div><!-- /modal -->
+</div><!-- /modal-overlay -->
+
+<script>
+function openModal(){document.getElementById('mmodal').classList.add('open');}
+function closeModal(){document.getElementById('mmodal').classList.remove('open');}
+document.getElementById('mmodal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+function mSearch(){
+  const q=document.getElementById('msearch').value.trim().toLowerCase();
+  document.querySelectorAll('.mrow').forEach(r=>{
+    r.classList.toggle('hide', q!==''&&!r.textContent.toLowerCase().includes(q));
+  });
+  if(q!==''){
+    document.querySelectorAll('.mfb').forEach(b=>b.classList.remove('on'));
+    document.querySelectorAll('.msec').forEach(s=>s.style.display='');
+  }
+}
+function mFilter(sec,btn){
+  document.getElementById('msearch').value='';
+  document.querySelectorAll('.mrow').forEach(r=>r.classList.remove('hide'));
+  document.querySelectorAll('.mfb').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.msec').forEach(s=>{
+    s.style.display=(sec==='all'||s.dataset.sec===sec)?'':'none';
+  });
+}
+</script>
+</body>
+</html>
