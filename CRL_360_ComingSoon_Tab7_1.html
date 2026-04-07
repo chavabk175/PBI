@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CRL 360 — What's Coming Next</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #eef0f4;
+  --surface: #ffffff;
+  --navy: #0c2340;
+  --blue: #0078d4;
+  --border: #e2e8f0;
+  --text-1: #0f172a;
+  --text-2: #475569;
+  --text-3: #94a3b8;
+
+  /* status colors */
+  --q2-bg:   #f0f9ff; --q2-border: #bae6fd; --q2-text: #0369a1; --q2-dot: #0078d4;
+  --q3-bg:   #f5f3ff; --q3-border: #c4b5fd; --q3-text: #6d28d9; --q3-dot: #7c3aed;
+  --tbd-bg:  #fff7ed; --tbd-border: #fed7aa; --tbd-text: #c2410c; --tbd-dot: #f97316;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 1920px;
+  min-width: 1920px;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text-1);
+  overflow-x: hidden;
+}
+
+/* ── TOP BAR ── */
+.top-bar {
+  background: linear-gradient(90deg, #0c2340 0%, #163d60 100%);
+  padding: 0 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 38px;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+}
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-logo {
+  background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+  border-radius: 5px; padding: 2px 8px;
+  font-size: 17px; font-weight: 700; color: #fff; letter-spacing: 1.2px;
+}
+.brand-name { font-size: 17px; font-weight: 700; color: #fff; }
+.brand-sep  { width: 1px; height: 16px; background: rgba(255,255,255,.18); }
+.brand-sub  { font-size: 17px; color: rgba(255,255,255,.45); }
+.top-meta   { display: flex; align-items: center; gap: 12px; font-size: 16px; color: rgba(255,255,255,.4); }
+.meta-sep   { color: rgba(255,255,255,.18); }
+
+/* ── TAB BAR ── */
+.tab-bar {
+  background: linear-gradient(180deg, #163d60 0%, #1a4870 100%);
+  padding: 0 24px;
+  display: flex; align-items: flex-end; gap: 2px;
+  height: 34px;
+  box-shadow: 0 3px 12px rgba(0,0,0,.25);
+}
+.tab {
+  padding: 7px 16px 0;
+  font-size: 10.5px; font-weight: 600;
+  color: rgba(255,255,255,.45);
+  border-radius: 8px 8px 0 0;
+  height: 34px; display: flex; align-items: center; gap: 5px;
+  white-space: nowrap;
+}
+.tab.active {
+  background: var(--bg);
+  color: var(--navy);
+}
+.tab-badge {
+  font-size: 8px; font-weight: 800; padding: 1px 5px;
+  border-radius: 8px; letter-spacing: .4px; text-transform: uppercase;
+  background: #0078d4; color: #fff;
+}
+.tab-spacer { flex: 1; }
+
+/* ── MAIN CONTENT ── */
+.page {
+  padding: 36px 52px 52px;
+  min-height: calc(1080px - 72px);
+}
+
+/* ── HEADER ── */
+.page-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 36px;
+}
+.page-header-left {}
+.eyebrow {
+  font-size: 16px; font-weight: 600; letter-spacing: 1.4px;
+  text-transform: uppercase; color: var(--text-3); margin-bottom: 8px;
+}
+.headline {
+  font-size: 48px; font-weight: 300; color: var(--text-1);
+  letter-spacing: -.5px; line-height: 1.15; margin-bottom: 10px;
+}
+.headline strong { font-weight: 700; color: var(--navy); }
+.sub {
+  font-size: 17px; color: var(--text-2); line-height: 1.7;
+  max-width: 560px;
+}
+.live-summary {
+  background: var(--surface); border: 0.5px solid var(--border);
+  border-radius: 10px; padding: 14px 18px;
+  min-width: 280px;
+}
+.live-summary-lbl { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--text-3); margin-bottom: 8px; }
+.live-tab-row { display: flex; align-items: center; gap: 7px; padding: 4px 0; }
+.live-dot-green { width: 6px; height: 6px; border-radius: 50%; background: #10b981; flex-shrink: 0; }
+.live-tab-name { font-size: 17px; color: var(--text-2); }
+
+/* ── SECTION DIVIDERS ── */
+.section-lbl {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 14px; margin-top: 8px;
+}
+.section-lbl-text {
+  font-size: 16px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .8px; white-space: nowrap;
+}
+.section-lbl-line { flex: 1; height: 1px; background: var(--border); }
+.section-q2 .section-lbl-text { color: var(--q2-dot); }
+.section-q3 .section-lbl-text { color: var(--q3-dot); }
+
+/* ── CARD GRID ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+
+/* ── CARD ── */
+.card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  transition: box-shadow .2s, transform .2s;
+}
+.card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+
+.card-top-bar { height: 3px; width: 100%; }
+
+.card-body { padding: 20px 22px 20px; flex: 1; display: flex; flex-direction: column; gap: 0; }
+
+.card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
+.card-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+.status-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .5px; padding: 4px 10px; border-radius: 20px;
+  border: 0.5px solid;
+}
+.status-pill-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+
+.q2-pill  { background: var(--q2-bg);  color: var(--q2-text);  border-color: var(--q2-border); }
+.q2-pill .status-pill-dot  { background: var(--q2-dot); }
+.q3-pill  { background: var(--q3-bg);  color: var(--q3-text);  border-color: var(--q3-border); }
+.q3-pill .status-pill-dot  { background: var(--q3-dot); animation: blink 2s infinite; }
+.tbd-pill { background: var(--tbd-bg); color: var(--tbd-text); border-color: var(--tbd-border); }
+.tbd-pill .status-pill-dot { background: var(--tbd-dot); }
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+.card-title {
+  font-size: 17px; font-weight: 600; color: var(--text-1);
+  letter-spacing: -.15px; line-height: 1.3; margin-bottom: 8px;
+}
+.card-desc {
+  font-size: 16px; color: var(--text-2); line-height: 1.7;
+  flex: 1; margin-bottom: 16px;
+}
+
+.metric-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.chip {
+  font-size: 16px; font-weight: 600; padding: 3px 9px;
+  border-radius: 20px; letter-spacing: .2px;
+  border: 0.5px solid;
+}
+
+.chip-blue   { background: var(--q2-bg);  color: var(--q2-text);  border-color: var(--q2-border); }
+.chip-purple { background: var(--q3-bg);  color: var(--q3-text);  border-color: var(--q3-border); }
+.chip-orange { background: var(--tbd-bg); color: var(--tbd-text); border-color: var(--tbd-border); }
+.chip-green  { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
+.chip-amber  { background: #fffbeb; color: #92400e; border-color: #fde68a; }
+
+/* ── ELT CALLOUT ── */
+.elt-callout {
+  background: #fff7ed; border: 0.5px solid var(--tbd-border);
+  border-left: 3px solid var(--tbd-dot);
+  border-radius: 0 8px 8px 0;
+  padding: 10px 14px;
+  font-size: 17px; color: #92400e;
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 14px;
+}
+.elt-callout svg { flex-shrink: 0; }
+
+/* ── FOOTER ── */
+.footer {
+  margin-top: 32px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.footer-left { font-size: 17px; color: var(--text-3); line-height: 1.7; }
+.footer-right { display: flex; align-items: center; gap: 8px; }
+.footer-badge {
+  background: var(--navy); color: rgba(255,255,255,.7);
+  font-size: 11px; font-weight: 700; letter-spacing: .5px;
+  padding: 3px 9px; border-radius: 4px;
+}
+.footer-ver {
+  font-size: 17px; font-weight: 600;
+  color: var(--text-2); font-family: 'DM Mono', monospace;
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="brand">
+    <div class="brand-logo">CRL</div>
+    <div class="brand-name">CRL 360 Dashboard</div>
+    <div class="brand-sep"></div>
+    <div class="brand-sub">US Distribution Operations</div>
+  </div>
+  <div class="top-meta">
+    <span>Last refresh: Mar 22, 2026 · Day 15 of 25 ship days</span>
+    <span class="meta-sep">|</span>
+    <span>5 Modules Active</span>
+    <span class="meta-sep">|</span>
+    <span style="background:rgba(0,120,212,.18);padding:1px 7px;border-radius:3px;font-size:9px;font-weight:800;letter-spacing:.5px;color:#60a5fa;">v4</span>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <div class="tab">🗺️ Control Tower</div>
+  <div class="tab">🏢 In-Branch V2</div>
+  <div class="tab">⚡ Over-Due Orders V2</div>
+  <div class="tab">📅 Future Orders V3</div>
+  <div class="tab">⚙️ AOP Simulator</div>
+  <div class="tab active">🔭 What's Next <span class="tab-badge">Tab 7</span></div>
+  <div class="tab-spacer"></div>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="eyebrow">CRL 360 · Product Roadmap · 2026</div>
+      <div class="headline">What's <strong>coming next</strong></div>
+      <div class="sub">CRL 360 expands from order visibility into a full operational intelligence platform — connecting replenishment analytics, associate productivity, inventory health, and AI-driven fulfillment guidance into a single decision surface.</div>
+    </div>
+    <div class="live-summary">
+      <div class="live-summary-lbl">Live today — 5 active modules</div>
+      <div class="live-tab-row"><div class="live-dot-green"></div><span class="live-tab-name">Control Tower</span></div>
+      <div class="live-tab-row"><div class="live-dot-green"></div><span class="live-tab-name">In-Branch V2</span></div>
+      <div class="live-tab-row"><div class="live-dot-green"></div><span class="live-tab-name">Over-Due Orders V2</span></div>
+      <div class="live-tab-row"><div class="live-dot-green"></div><span class="live-tab-name">Future Orders V3</span></div>
+      <div class="live-tab-row"><div class="live-dot-green"></div><span class="live-tab-name">AOP Simulator</span></div>
+    </div>
+  </div>
+
+  <!-- Q2 DELIVERABLES -->
+  <div class="section-lbl section-q2">
+    <span class="section-lbl-text">Q2 2026 Deliverables</span>
+    <div class="section-lbl-line"></div>
+  </div>
+
+  <div class="grid-2">
+
+    <!-- Card 1: PO/STO -->
+    <div class="card">
+      <div class="card-top-bar" style="background:#0078d4;"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-icon" style="background:#f0f9ff;">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <rect x="2" y="3" width="8" height="16" rx="2" stroke="#0078d4" stroke-width="1.5"/>
+              <rect x="12" y="7" width="8" height="12" rx="2" stroke="#60b8ee" stroke-width="1.5"/>
+              <path d="M5 7h2M5 10h2M5 13h2" stroke="#0078d4" stroke-width="1.4" stroke-linecap="round"/>
+              <path d="M15 11h2M15 14h2" stroke="#60b8ee" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <span class="status-pill q2-pill"><span class="status-pill-dot"></span>Q2 2026</span>
+        </div>
+        <div class="card-title">PO / STO Replenishment &amp; Deployment Analytics</div>
+        <div class="card-desc">Full lifecycle visibility into purchase orders and stock transfers — from creation through receipt, stocking, and branch deployment. Surfaces pipeline bottlenecks, tracks vendor lead time accuracy, and provides STO efficiency metrics across the distribution network. Designed to systematically reduce branch stockouts and improve days-to-deploy.</div>
+        <div class="metric-chips">
+          <span class="chip chip-blue">STO pipeline stages</span>
+          <span class="chip chip-blue">PO lifecycle tracking</span>
+          <span class="chip chip-blue">Deployment efficiency</span>
+          <span class="chip chip-blue">Vendor lead time</span>
+          <span class="chip chip-blue">Arrived not stocked</span>
+          <span class="chip chip-blue">Branch stockout trends</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: CRL Lifecycle -->
+    <div class="card">
+      <div class="card-top-bar" style="background:#7c3aed;"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-icon" style="background:#f5f3ff;">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <circle cx="4" cy="11" r="2.5" stroke="#7c3aed" stroke-width="1.5"/>
+              <circle cx="11" cy="11" r="2.5" stroke="#7c3aed" stroke-width="1.5"/>
+              <circle cx="18" cy="11" r="2.5" stroke="#7c3aed" stroke-width="1.5"/>
+              <path d="M6.5 11h2.5M13.5 11h2" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M4 4v5M11 4v5M18 4v5" stroke="#a78bfa" stroke-width="1" stroke-linecap="round" stroke-dasharray="1.5 1.5"/>
+              <path d="M2.5 16.5h3M9.5 16.5h3M16.5 16.5h3" stroke="#a78bfa" stroke-width="1" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <span class="status-pill q2-pill"><span class="status-pill-dot"></span>Q2 2026</span>
+        </div>
+        <div class="card-title">Custom CRL Orders Lifecycle — Manufacturing Integration</div>
+        <div class="card-desc">End-to-end traceability for custom orders integrated with manufacturing stages. From order entry through production scheduling, shop floor execution, QA sign-off, and final shipment — a single view that bridges commercial operations and manufacturing. Eliminates the visibility gap between what was ordered and what is being built.</div>
+        <div class="metric-chips">
+          <span class="chip chip-purple">Manufacturing stages</span>
+          <span class="chip chip-purple">Order entry → shipment</span>
+          <span class="chip chip-purple">Production scheduling</span>
+          <span class="chip chip-purple">QA milestones</span>
+          <span class="chip chip-purple">Shop floor status</span>
+          <span class="chip chip-purple">Cycle time analytics</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Q3 / TBD -->
+  <div class="section-lbl section-q3" style="margin-top:8px;">
+    <span class="section-lbl-text">Q3 2026 / TBD — Pending ELT Discussion</span>
+    <div class="section-lbl-line"></div>
+  </div>
+
+  <div class="elt-callout">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="#f97316" stroke-width="1.2"/><path d="M8 5v3.5M8 10.5v.5" stroke="#f97316" stroke-width="1.3" stroke-linecap="round"/></svg>
+    Timeline and scope for these modules are subject to ELT prioritisation discussion. Metrics and features shown below represent current planning assumptions.
+  </div>
+
+  <div class="grid-3">
+
+    <!-- Card 3: Order.ai -->
+    <div class="card" style="border-color:#93c5fd;">
+      <div class="card-top-bar" style="background:linear-gradient(90deg,#0078d4 0%,#7c3aed 100%);"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-icon" style="background:#eff6ff;">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <path d="M11 2C7.134 2 4 5.134 4 9c0 2.387 1.218 4.49 3.068 5.73L7.75 20h6.5l.682-5.27C16.782 13.49 18 11.387 18 9c0-3.866-3.134-7-7-7z" stroke="#0078d4" stroke-width="1.5" stroke-linejoin="round"/>
+              <path d="M9 9.5h4M11 7.5v4" stroke="#60b8ee" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <span class="status-pill tbd-pill"><span class="status-pill-dot"></span>Q3 / TBD</span>
+        </div>
+        <div class="card-title">Order.ai</div>
+        <div class="card-desc">A next-generation AI simulator and navigation guide for order fulfillment and replenishment. Combines real-time backlog data, inventory positions, and inbound supply pipeline into ranked, actionable recommendations — telling your team not just the situation, but exactly what to do about it and in what order.</div>
+        <div class="metric-chips">
+          <span class="chip chip-orange">AI recommendations</span>
+          <span class="chip chip-orange">Scenario simulation</span>
+          <span class="chip chip-orange">Action prioritization</span>
+          <span class="chip chip-orange">Fulfillment guidance</span>
+          <span class="chip chip-orange">Replenishment routing</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4: Associate Productivity -->
+    <div class="card">
+      <div class="card-top-bar" style="background:#059669;"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-icon" style="background:#f0fdf4;">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <circle cx="11" cy="6.5" r="3" stroke="#059669" stroke-width="1.5"/>
+              <path d="M5 19c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="#059669" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M15.5 11l1.5 1.5-2.5 2.5" stroke="#34d399" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="status-pill tbd-pill"><span class="status-pill-dot"></span>Q3 / TBD</span>
+        </div>
+        <div class="card-title">Associate Productivity</div>
+        <div class="card-desc">Workforce performance analytics at branch and network level — tracking safety incidents, retention signals, operational throughput, and labour cost structure. Surfaces early warning signals and benchmarks branch performance across the distribution network.</div>
+        <div class="metric-chips">
+          <span class="chip chip-green">Recordables</span>
+          <span class="chip chip-green">Turnovers</span>
+          <span class="chip chip-green">Pick / pack / ship UPH</span>
+          <span class="chip chip-green">Overtime %</span>
+          <span class="chip chip-green">Fixed vs. variable costs</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 5: Inventory Health -->
+    <div class="card">
+      <div class="card-top-bar" style="background:#d97706;"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-icon" style="background:#fffbeb;">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <rect x="2"  y="12" width="4" height="8"  rx="1" stroke="#d97706" stroke-width="1.5"/>
+              <rect x="8"  y="8"  width="4" height="12" rx="1" stroke="#d97706" stroke-width="1.5"/>
+              <rect x="14" y="4"  width="4" height="16" rx="1" stroke="#fbbf24" stroke-width="1.5"/>
+              <path d="M3 9l4.5-4 4.5 3.5 5-6" stroke="#fbbf24" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="status-pill tbd-pill"><span class="status-pill-dot"></span>Q3 / TBD</span>
+        </div>
+        <div class="card-title">Inventory Health</div>
+        <div class="card-desc">A comprehensive view of inventory performance across all branches — measuring velocity, ageing, obsolescence risk, and availability gaps. Surfaces slow-moving and obsolete stock early, benchmarks turns against AOP targets, and drives smarter replenishment decisions before problems compound.</div>
+        <div class="metric-chips">
+          <span class="chip chip-amber">Days on hand</span>
+          <span class="chip chip-amber">Inventory turns</span>
+          <span class="chip chip-amber">SLOBs</span>
+          <span class="chip chip-amber">Stockout rates</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-left">
+      CRL 360 Dashboard · US Distribution Operations · March 2026<br>
+      Roadmap subject to change · All timelines based on current planning assumptions · ELT sign-off required for Q3 modules
+    </div>
+    <div class="footer-right">
+      <div class="footer-badge">CRL</div>
+      <div class="footer-ver">v4 · 2026</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
